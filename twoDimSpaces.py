@@ -1,5 +1,6 @@
 #! /usr/bin/env python
 import ROOT
+import sys
 from optparse import OptionParser
 from array import array
 
@@ -41,9 +42,6 @@ def configuration():
 ############################################
 def opts():
     parser = OptionParser("usage: %prog [options]")
-    parser.add_option("-f", "--file", action="store", type="string", 
-        dest="filename", default=None, metavar="F",
-        help="file name to retrieve graphs from")
     parser.add_option( "-s", "--short", action="store_true", dest="short",
         default=False, 
         help = "short tree mode was used to generate the graphs" )
@@ -55,8 +53,8 @@ def opts():
         default=False, 
         help = "turn on to prevent drawing of contours (i.e. for histo only" )
     options,args = parser.parse_args()
-    assert options.filename!=None,"File must be specified"
-    return options
+    assert len(args) > 0,"File must be specified"
+    return options, args
 ############################################
 
 
@@ -193,39 +191,37 @@ def main(argv=None):
     ROOT.gROOT.SetBatch(0)
     # import out configuration and command line options
     conf = configuration()
-    options = opts()
+    options, files = opts()
+    assert len(files) > 0, "Must specify files as command line arguments"
 
     # set up root to look pretty 
     rootStyle(conf)
     colorPalette(conf)
 
-    f = ROOT.TFile(options.filename)
-
     if not conf["Zmax"]:
         conf["Zmax"] = getZMax(conf["ContourType"])
+
+    blank_histogram = len(files) > 1 or options.no_histo
+    if blank_histogram:
+            print "Printing blank histograms"
 
     for i, (x, y) in enumerate( zip( conf["Xvar"], conf["Yvar"] ) ):
         canvas_title = "MCcontour_%d" % i
         canvas_name = "MC_%d" % i
         canvas = ROOT.TCanvas(canvas_name,canvas_title,1)
-
         directory = getPlotDirectory(x, y, conf["ContourType"], \
             conf["ContribVar"], options.short)
-
-        blank_histogram = False
-        if options.no_histo:
-            blank_histogram = True
-        drawHistogram( f, directory, conf, i, blank_histogram )
-        if not options.no_contours:
-            drawContours( f, directory, conf, i)
+        for filename in files:
+            f = ROOT.TFile(filename)
+            drawHistogram( f, directory, conf, i, blank_histogram )
+            if not options.no_contours:
+                drawContours( f, directory, conf, i)
 
         drawLabel(conf)
         outfile = "%s_%s_%d_%d.%s" % (conf["OutfilePrefix"], conf["ContourType"], \
             conf["Xvar"][i], conf["Yvar"][i], conf["OutfileType"] )
         canvas.SaveAs(outfile)
         canvas.Close()
-
-    f.Close()
 
 if __name__ == "__main__":
     main()
