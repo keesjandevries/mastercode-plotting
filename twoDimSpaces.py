@@ -3,6 +3,41 @@ import ROOT
 from optparse import OptionParser
 from array import array
 
+# you should definitely change this stuff :) it's what's going ot be plotted
+# can just dump this out as a class that takes a dictionary as a contructor
+# - then just loop over some list of dictionaries to allow different contour
+# modes in a single run
+def configuration():
+    out = {  
+             "ContourType":     ["RawChi2", "DeltaChi2", "PValue", "FTestSM", \
+                                 "ObsContribution" ][1],
+             "Zmax":            None,
+             "Zmin":            0.0,
+             "Zsteps":          25,
+             "Xvar":            [1,4],
+             "Yvar":            [2,2],
+             "XvarName":        ["m_{0}","tan(#beta)"],
+             "YvarName":        ["m_{1/2}","m_{1/2}"],
+             "OutfilePrefix":   "~/mc7",
+             "OutfileType":     "png",
+             "ContourList":     ["graph68", "graph95", "graph99"][:-1],
+             "ContourColors":   [ROOT.kBlue, ROOT.kRed, ROOT.kGreen][:-1],
+             "Label":           "CMSSM preLHC",
+             "LabelColor":      8,
+             "LabelLocation":   [0.2,0.8],
+             "LabelTextSize":   0.05,
+             "ContribVar":      None,
+             "MinPointsToDraw": 35, 
+          }
+    assert len(out["Xvar"]) == len(out["Yvar"]) and \
+           len(out["Xvar"]) == len(out["XvarName"]) and \
+           len(out["Xvar"]) == len(out["YvarName"]) , \
+           "Size of array of variables to plot and their names do not match"
+    assert len(out["ContourList"]) == len(out["ContourColors"]), \
+        "Size of ContourList and ContourColors do not match"
+           
+    return out
+
 ############################################
 def opts():
     parser = OptionParser("usage: %prog [options]")
@@ -24,39 +59,6 @@ def opts():
     return options
 ############################################
 
-# you should definitely change this stuff :) it's what's going ot be plotted
-# can just dump this out as a class that takes a dictionary as a contructor
-# - then just loop over some list of dictionaries to allow different contour
-# modes in a single run
-def configuration():
-    out = { "MinPointsToDraw": 35, 
-             "ContourType":     ["RawChi2", "DeltaChi2", "PValue", "FTestSM", \
-                                 "ObsContribution" ][1],
-             "Zmax":            25.0,
-             "Zmin":            0.0,
-             "Zsteps":          25,
-             "Xvar":            [1,4],
-             "Yvar":            [2,2],
-             "XvarName":        ["m_{0}","tan(#beta)"],
-             "YvarName":        ["m_{1/2}","m_{1/2}"],
-             "OutfilePrefix":   "~/mc7",
-             "OutfileType":     "png",
-             "ContourList":     ["graph68", "graph95", "graph99"][:-1],
-             "ContourColors":   [ROOT.kBlue, ROOT.kRed, ROOT.kGreen][:-1],
-             "Label":           "CMSSM preLHC",
-             "LabelColor":      8,
-             "LabelLocation":   [0.2,0.8],
-             "LabelTextSize":   0.05,
-             "ContribVar":      None
-          }
-    assert len(out["Xvar"]) == len(out["Yvar"]) and \
-           len(out["Xvar"]) == len(out["XvarName"]) and \
-           len(out["Xvar"]) == len(out["YvarName"]) , \
-           "Size of array of variables to plot and their names do not match"
-    assert len(out["ContourList"]) == len(out["ContourColors"]), \
-        "Size of ContourList and ContourColors do not match"
-           
-    return out
 
 def getDirIndexFromMode(mode):
     out = -1
@@ -140,14 +142,20 @@ def getPlotDirectory(x, y, space, contrib, short):
     directory = "plots_%d_%d_%d%s" % ( x, y, index, stem )
     return directory
 
-def drawHistogram(f,directory,conf,i):
+def drawHistogram(f,directory,conf,i,empty):
     contour = f.Get(directory + "/hCont")
 
     contour.SetMaximum(conf["Zmax"])
     contour.SetMinimum(conf["Zmin"])
     contour.SetContour(conf["Zsteps"]);
 
-    contour.Draw("colz");
+    draw_options = "colz"
+    if empty:
+        draw_options = ""
+    contour.Draw(draw_options)
+
+    if empty:
+        contour.Reset("ICE")
 
     contour.GetXaxis().SetTitle(conf["XvarName"][i]);
     contour.GetYaxis().SetTitle(conf["YvarName"][i]);
@@ -182,6 +190,7 @@ def drawLabel(conf):
     return;
 
 def main(argv=None):
+    ROOT.gROOT.SetBatch(0)
     # import out configuration and command line options
     conf = configuration()
     options = opts()
@@ -203,8 +212,10 @@ def main(argv=None):
         directory = getPlotDirectory(x, y, conf["ContourType"], \
             conf["ContribVar"], options.short)
 
-        if not options.no_histo:
-            drawHistogram( f, directory, conf, i )
+        blank_histogram = False
+        if options.no_histo:
+            blank_histogram = True
+        drawHistogram( f, directory, conf, i, blank_histogram )
         if not options.no_contours:
             drawContours( f, directory, conf, i)
 
