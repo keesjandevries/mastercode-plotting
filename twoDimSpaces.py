@@ -1,5 +1,4 @@
 #! /usr/bin/env python
-
 import ROOT
 from optparse import OptionParser
 from array import array
@@ -86,7 +85,20 @@ def getZAxisTitle(mode):
     if mode == "FTestSM":
         out = "p_{F}"
     return out
-    
+
+def getZMax(mode):
+    out = 0.0
+    if mode == "RawChi2":
+        out = 60.0
+    if mode == "DeltaChi2":
+        out = 25.0
+    if mode == "PValue":
+        out = 1.0
+    if mode == "ObsContribution":
+        out = 9.0 
+    if mode == "FTestSM":
+        out = 1.0
+    return out
 
 def colorPalette(d):
     stops = array('d', [ 0.00, 0.34, 0.61, 0.84, 1.00 ] )
@@ -179,6 +191,9 @@ def main(argv=None):
     colorPalette(conf)
 
     f = ROOT.TFile(options.filename)
+
+    if not conf["Zmax"]:
+        conf["Zmax"] = getZMax(conf["ContourType"])
 
     for i, (x, y) in enumerate( zip( conf["Xvar"], conf["Yvar"] ) ):
         canvas_title = "MCcontour_%d" % i
