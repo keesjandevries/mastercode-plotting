@@ -13,32 +13,50 @@ def opts():
     parser.add_option( "-s", "--short", action="store_true", dest="short",
         default=False, 
         help = "short tree mode was used to generate the graphs" )
+    parser.add_option( "--no-histogram", action="store_true", dest="no_histo",
+        default=False, 
+        help = "turn on to prevent drawing of histogram (i.e. for contour only \
+        mode" )
+    parser.add_option( "--no-contours", action="store_true", dest="no_contours",
+        default=False, 
+        help = "turn on to prevent drawing of contours (i.e. for histo only" )
     options,args = parser.parse_args()
     assert options.filename!=None,"File must be specified"
     return options
 ############################################
 
 # you should definitely change this stuff :) it's what's going ot be plotted
+# can just dump this out as a class that takes a dictionary as a contructor
+# - then just loop over some list of dictionaries to allow different contour
+# modes in a single run
 def configuration():
     out = { "MinPointsToDraw": 35, 
              "ContourType":     ["RawChi2", "DeltaChi2", "PValue", "FTestSM", \
-                                 "ObsContribution" ][2],
-             "OutfilePrefix":   "test_file",
+                                 "ObsContribution" ][1],
+             "Zmax":            25.0,
+             "Zmin":            0.0,
+             "Zsteps":          25,
              "Xvar":            [1,4],
              "Yvar":            [2,2],
              "XvarName":        ["m_{0}","tan(#beta)"],
              "YvarName":        ["m_{1/2}","m_{1/2}"],
-             "Zmax":            1.0,
-             "Zmin":            0.0,
-             "Zsteps":          25,
-             "label":           "TEST PLOT",
-             "labelLocation":   array( 'd', [0.1, 0.1, 1.0, 1.0] ),
-             "ContribVar":       None
+             "OutfilePrefix":   "~/mc7",
+             "OutfileType":     "png",
+             "ContourList":     ["graph68", "graph95", "graph99"][:-1],
+             "ContourColors":   [ROOT.kBlue, ROOT.kRed, ROOT.kGreen][:-1],
+             "Label":           "CMSSM preLHC",
+             "LabelColor":      8,
+             "LabelLocation":   [0.2,0.8],
+             "LabelTextSize":   0.05,
+             "ContribVar":      None
           }
     assert len(out["Xvar"]) == len(out["Yvar"]) and \
            len(out["Xvar"]) == len(out["XvarName"]) and \
-           len(out["Xvar"]) == len(out["YvarName"]), \
+           len(out["Xvar"]) == len(out["YvarName"]) , \
            "Size of array of variables to plot and their names do not match"
+    assert len(out["ContourList"]) == len(out["ContourColors"]), \
+        "Size of ContourList and ContourColors do not match"
+           
     return out
 
 def getDirIndexFromMode(mode):
@@ -110,14 +128,13 @@ def getPlotDirectory(x, y, space, contrib, short):
     directory = "plots_%d_%d_%d%s" % ( x, y, index, stem )
     return directory
 
-def drawContour(filename,directory,conf,i):
-    f = ROOT.TFile(filename)
+def drawHistogram(f,directory,conf,i):
     contour = f.Get(directory + "/hCont")
+
     contour.SetMaximum(conf["Zmax"])
     contour.SetMinimum(conf["Zmin"])
     contour.SetContour(conf["Zsteps"]);
 
-    canvas = ROOT.TCanvas("MC","MCcontour",1)
     contour.Draw("colz");
 
     contour.GetXaxis().SetTitle(conf["XvarName"][i]);
@@ -126,21 +143,63 @@ def drawContour(filename,directory,conf,i):
     ztitle = getZAxisTitle( conf["ContourType"] )
     contour.GetZaxis().SetTitle(ztitle)
 
-    outfile = "~/%s_%d_%d.eps" % (conf["OutfilePrefix"], conf["Xvar"][i], \
-        conf["Yvar"][i] )
-    canvas.SaveAs(outfile)
-    f.Close()
+def drawContours(f,directory,conf,i):
+    for contourPrefix, color in zip(conf["ContourList"], conf["ContourColors"]):
+        igraph = 0;
+        more_graphs = True
+        while more_graphs:
+            graphName = ( "%s/%s_%d" ) % ( directory, contourPrefix, igraph )
+            graph = f.Get(graphName)
+            if graph:
+                graph.SetLineColor(color);
+                graph.SetLineWidth(3);
+                graph.SetLineStyle(1);
+                if ( graph.GetN() > conf["MinPointsToDraw"] ):
+                    graph.Draw("L")
+                igraph+=1;
+            else:
+                more_graphs = False
+    return
 
+def drawLabel(conf):
+    ltext = ("#color[%d]{%s}") % ( conf["LabelColor"], conf["Label"] )
+    Tl = ROOT.TLatex()
+    Tl.SetNDC(True);
+    Tl.SetTextSize(conf["LabelTextSize"]);
+    Tl.DrawLatex(conf["LabelLocation"][0], conf["LabelLocation"][1], ltext);
+    return;
 
 def main(argv=None):
+    # import out configuration and command line options
     conf = configuration()
     options = opts()
+
+    # set up root to look pretty 
     rootStyle(conf)
     colorPalette(conf)
+
+    f = ROOT.TFile(options.filename)
+
     for i, (x, y) in enumerate( zip( conf["Xvar"], conf["Yvar"] ) ):
+        canvas_title = "MCcontour_%d" % i
+        canvas_name = "MC_%d" % i
+        canvas = ROOT.TCanvas(canvas_name,canvas_title,1)
+
         directory = getPlotDirectory(x, y, conf["ContourType"], \
             conf["ContribVar"], options.short)
-        drawContour( options.filename, directory, conf, i )
+
+        if not options.no_histo:
+            drawHistogram( f, directory, conf, i )
+        if not options.no_contours:
+            drawContours( f, directory, conf, i)
+
+        drawLabel(conf)
+        outfile = "%s_%s_%d_%d.%s" % (conf["OutfilePrefix"], conf["ContourType"], \
+            conf["Xvar"][i], conf["Yvar"][i], conf["OutfileType"] )
+        canvas.SaveAs(outfile)
+        canvas.Close()
+
+    f.Close()
 
 if __name__ == "__main__":
     main()
