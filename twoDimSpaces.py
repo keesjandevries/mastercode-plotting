@@ -115,7 +115,7 @@ def main(argv=None):
 
     # set up root to look pretty 
     mc.rootStyle(conf)
-    mc.histoColorPalette(conf)
+    mc.histoColorPalette(conf["ContourType"])
 
     if not conf["Zmax"]:
         conf["Zmax"] = mc.getHistoZMax(conf["ContourType"])
