@@ -41,7 +41,7 @@ void drawLabel(TString& text, ItemLocation* loc, int color = 1, double size = 0.
 void zeroSuppress( TH1* hist, double forced_minimum = 0, double xmin = 0, 
     double xmax = 0, bool supprange = false ) {
 
-   if( !supprange ) {
+   if( !supprange ) { // suppress whole graph
      xmin = hist->GetBinLowEdge(1); 
      int nbins = hist->GetNbinsX();
      xmax = hist->GetBinLowEdge(nbins)+hist->GetBinWidth(nbins); 
