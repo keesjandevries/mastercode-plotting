@@ -106,7 +106,7 @@ def main(argv=None):
     assert len(files) > 0, "Must specify files as command line arguments"
 
     # set up root to look pretty 
-    mcf.rootStyle(conf)
+    mcf.rootStyle()
     mcf.histoColorPalette(conf["ContourType"])
 
     if not conf["Zmax"]:
