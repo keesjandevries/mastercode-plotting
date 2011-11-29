@@ -3,7 +3,8 @@ import ROOT
 import sys
 from optparse import OptionParser
 
-import mcfunctions as mc
+import mcfunctions as mcf
+import mcconstants as mcc
 
 # you should definitely change this stuff :) it's what's going ot be plotted
 # can just dump this out as a class that takes a dictionary as a contructor
@@ -11,8 +12,7 @@ import mcfunctions as mc
 # modes in a single run
 def configuration():
     out = {  
-             "ContourType":     ["RawChi2", "DeltaChi2", "PValue", "FTestSM", \
-                                 "ObsContribution" ][1],
+             "ContourType":     mcc.calcModes[1],
              "Zmax":            None,
              "Zmin":            0.0,
              "Zsteps":          25,
@@ -77,7 +77,7 @@ def drawHistogram(f,directory,conf,i,empty):
     contour.GetXaxis().SetTitle(conf["XvarName"][i]);
     contour.GetYaxis().SetTitle(conf["YvarName"][i]);
     contour.GetYaxis().SetTitleOffset(1.1);
-    ztitle = mc.getHistoZAxisTitle( conf["ContourType"] )
+    ztitle = mcf.getHistoZAxisTitle( conf["ContourType"] )
     contour.GetZaxis().SetTitle(ztitle)
 
 def drawContours(f,directory,conf,i):
@@ -106,11 +106,11 @@ def main(argv=None):
     assert len(files) > 0, "Must specify files as command line arguments"
 
     # set up root to look pretty 
-    mc.rootStyle(conf)
-    mc.histoColorPalette(conf["ContourType"])
+    mcf.rootStyle(conf)
+    mcf.histoColorPalette(conf["ContourType"])
 
     if not conf["Zmax"]:
-        conf["Zmax"] = mc.getHistoZMax(conf["ContourType"])
+        conf["Zmax"] = mcf.getHistoZMax(conf["ContourType"])
 
     blank_histogram = len(files) > 1 or options.no_histo
     if blank_histogram:
@@ -120,7 +120,7 @@ def main(argv=None):
         canvas_title = "MCcontour_%d" % i
         canvas_name = "MC_%d" % i
         canvas = ROOT.TCanvas(canvas_name,canvas_title,1)
-        directory = mc.getPlotDirectory( x, y, conf["ContourType"], \
+        directory = mcf.getPlotDirectory( x, y, conf["ContourType"], \
             options.short, conf["ContribVar"] )
         for filename in files:
             f = ROOT.TFile(filename)
@@ -131,7 +131,7 @@ def main(argv=None):
             # pad (apparently it's owned by hte file.  Need to make sure we
             # clean this up at the end.  i.e. iterate over gDirectory
 
-        mc.drawLabel(conf)
+        mcf.drawLabel(conf)
         outfile = "%s_%s_%d_%d.%s" % (conf["OutfilePrefix"], conf["ContourType"], \
             conf["Xvar"][i], conf["Yvar"][i], conf["OutfileType"] )
         canvas.SaveAs(outfile)
