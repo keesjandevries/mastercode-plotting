@@ -87,7 +87,7 @@ def histoColorPalette(mode):
     
     ROOT.TColor.CreateGradientColorTable(NRGBs, stops, red, green, blue, NCont)
 
-def rootStyle(d):
+def rootStyle():
     ROOT.gROOT.SetStyle("Pub");
     ROOT.gStyle.SetCanvasColor(0);
     ROOT.gStyle.SetPadRightMargin(0.18);
