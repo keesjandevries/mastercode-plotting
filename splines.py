@@ -75,6 +75,10 @@ def makeSplineObject( filename, x, y, plotVar, calcMode, short = False, label = 
 def zeroSuppressHist( hist, xmin, xmax, yoffset = 0. ) :
     ymin = 1e9
     minimum = 0.05
+    if yoffset == 0.:
+        xmin = hist.GetBinLowEdge(1)
+        nbins = hist.GetNbinsX()
+        xmax = hist.GetBinLowEdge(nbins) + hist.GetBinWidth(nbins)
     for i in range(1,hist.GetNbinsX()+1) :
         yval = hist.GetBinContent(i)
         if( hist.GetBinLowEdge(i) > xmin ) and ( hist.GetBinLowEdge(i) + hist.GetBinWidth(i) < xmax ) :
@@ -114,9 +118,18 @@ def drawGraphs( graphs, p ) :
     canvas.cd()
     test1 = ROOT.Double(0)
     test2 = ROOT.Double(0)
-    for p in range( 0, graphs[0].GetN() + 1 ) :
-        graphs[0].GetPoint( p, test1, test2 )
-    #graphs[0].Draw("AC")
+    first = True
+    options = "C"
+    for graph in graphs :
+        if first:
+            options = "AC"
+        else :
+            options = "C"
+        graph.Draw(options)
+        if first:
+            first = False
+            graph.GetXaxis().SetRangeUser( p.xmin, p.xmax )
+            graph.GetYaxis().SetRangeUser( 0, p.ymax )
     canvas.SaveAs("test.png")
 
 
@@ -129,11 +142,24 @@ def main(argv=None):
           "Label":     "TEST",
           "Short":     True,
           "CalcMode":  "DeltaChi2",
-          "Xmax":      [3000],
-          "Xmin":      [0],
-          "Yoffset":   [0],
-          "Smoothing": [10],
+          "Xmax":      [3000,4400],
+          "Xmin":      [0,3600],
+          "Yoffset":   [0,0],
+          "Smoothing": [10,50],
           "Color":     ROOT.kRed
+         }
+    e = { "Filename":  "/home/hyper/Documents/mastercode_data/cmssm-bsgOrig-g2Orig.root",
+          "Var1":      119,
+          "Var2":      0,
+          "PlotVar":   1,
+          "Label":     "TEST",
+          "Short":     True,
+          "CalcMode":  "DeltaChi2",
+          "Xmax":      [1000],
+          "Xmin":      [0],
+          "Yoffset":   [5],
+          "Smoothing": [10],
+          "Color":     ROOT.kGreen
          }
     p = { "Xmax":       5000.0,
           "Xmin":       0.0,
@@ -142,8 +168,9 @@ def main(argv=None):
           "YAxisLabel": "#Delta#Chi^{2}"
         }
     plotter = plotInfo( p )
-    spline = splineInfo( d )
-    slist = [spline]
+    spline1 = splineInfo( d )
+    spline2 = splineInfo( e )
+    slist = [spline1,spline2]
     graphs = getGraphs ( slist )
     drawGraphs( graphs, plotter )
 
