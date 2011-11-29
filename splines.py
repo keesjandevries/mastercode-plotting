@@ -12,50 +12,18 @@ import mcconsts as mcc
 # so need a function that retruns the TH1/TGraph for the line "getSpline",
 # append this into a list and send to the drwaing tool :)
 
-def configuration():
-    out = {
-             "FolderType":      mcc.calcModes[1],
-             "Ymax":            9.0,
-             "Var1":            [138,119],
-             "Var2":            [0,0],
-             "Draw1":           True,
-             "Draw2":           False,
-             "XvarName":        ["m_{0}","tan(#beta)"],
-             "YvarName":        ["#Delta#chi^{2}"],
-             "OutfilePrefix":   "~/mc7",
-             "OutfileType":     "png",
-             "LineColors":      [ROOT.kBlue, ROOT.kRed, ROOT.kGreen][:-1],
-             "Label":           "CMSSM preLHC",
-             "LabelColor":      8,
-             "LabelLocation":   [0.2,0.8],
-             "LabelTextSize":   0.05
-          }       
-    return out
-
 ############################################
 def opts():
     parser = OptionParser("usage: %prog [options]")
     parser.add_option( "-s", "--short", action="store_true", dest="short",
-        default=True, 
+        default=True,
         help = "short tree mode was used to generate the graphs" )
     options,args = parser.parse_args()
     assert len(args) > 0,"File must be specified"
     return options, args
 ############################################
 
-def getLine( filename, d, i, short ):
-    f = ROOT.gROOT.GetListOfFiles().FindObject(filename)
-    if f is None:
-        f = ROOT.TFile.Open(filename,"UPDATE")
-    directory = mcf.getPlotDirectory( d["Var1"][i], d["Var2"][i], \
-        d["ContourType"], short )
-    assert f.GetDirectory( directory ), \
-        "Failed to open directory %s" % ( directory )
-    hist1 = f.Get( directory+"/h1" )    
-    hist2 = f.Get( directory+"/h2" )    
-
-
-class splineInfo(object) :
+class splineInfo( object ) :
     def __init__( self, d ) :
         self.xmax_list    = d["Xmax"]
         self.xmin_list    = d["Xmin"]
@@ -65,6 +33,8 @@ class splineInfo(object) :
         self.filename     = d["Filename"]
         self.plotvar      = d["PlotVar"]
         self.label        = d["Label"]
+
+        self.color        = d["Color"]
 
         self.directory    = mcf.getPlotDirectory( d["Var1"], d["Var2"], d["CalcMode"], d["Short"] )
 
@@ -76,7 +46,15 @@ class splineInfo(object) :
     def setLabel( label ) :
         self.label = label
 
-def makeSplineObject( filename, x, y, plotVar, calcMode, short = False, label = "" ) :
+class plotInfo( object ) :
+    def __init__( self, d ) :
+        self.xmax = d["Xmax"]
+        self.xmin = d["Xmin"]
+        self.ymax = d["Ymax"]
+        self.xaxis_label = d["XAxisLabel"]
+        self.yaxis_label = d["YAxisLabel"]
+
+def makeSplineObject( filename, x, y, plotVar, calcMode, short = False, label = "", Color = ROOT.kRed ) :
     mode = mcc.calcModes[calcMode]
     d = { "Filename":  filename,
           "Var1":      x,
@@ -88,13 +66,87 @@ def makeSplineObject( filename, x, y, plotVar, calcMode, short = False, label = 
           "Xmax":      [],
           "Xmin":      [],
           "Yoffset":   [],
-          "Smoothing": []
-         }   
+          "Smoothing": [],
+          "Color":     Color
+         }
     splineObj = splineInfo( d )
     return splineObj
 
+def zeroSuppressHist( hist, xmin, xmax, yoffset = 0. ) :
+    ymin = 1e9
+    minimum = 0.05
+    for i in range(1,hist.GetNbinsX()+1) :
+        yval = hist.GetBinContent(i)
+        if( hist.GetBinLowEdge(i) > xmin ) and ( hist.GetBinLowEdge(i) + hist.GetBinWidth(i) < xmax ) :
+            if( yval < ymin ) :
+                ymin = yval
+    for i in range( 1, hist.GetNbinsX()+1 ):
+        if( hist.GetBinLowEdge(i) > xmin ) and ( hist.GetBinLowEdge(i) + hist.GetBinWidth(i) < xmax ) :
+            content = hist.GetBinContent(i) - ymin + minimum + yoffset
+            hist.SetBinContent( i, content )
+
+def getGraphs( splinelist ) :
+    graphlist = []
+    for s in splinelist :
+        f = ROOT.TFile.Open(s.filename,"UPDATE")
+        assert f.GetDirectory( s.directory ), \
+            "Failed to open directory %s" % ( s.directory )
+        if s.plotvar == 1:
+            hist = f.Get( s.directory+"/h1" )
+        else :
+            hist = f.Get( s.directory+"/h2" )
+        graphList = []
+        for ( smoothing, xmin, xmax, yoffset ) in zip( s.smooth_list, s.xmin_list, s.xmax_list, s.yoffset_list ) :
+            hist.GetXaxis().SetRangeUser( xmin, xmax )
+            hist.Smooth( smoothing,"R" )
+            zeroSuppressHist( hist, xmin, xmax, yoffset )
+        nbins = hist.GetNbinsX()
+        graph = ROOT.TGraph(nbins)
+        for i in range( 1, nbins+1 ) :
+            graph.SetPoint( i-1, hist.GetBinCenter(i), hist.GetBinContent(i) )
+        graph.SetLineColor(s.color)
+        graphlist.append(graph)
+    return graphlist
+
+def drawGraphs( graphs, p ) :
+    canvas = ROOT.TCanvas( "splines", "Smoothing", 10, 10, 800, 400 )
+    canvas.Draw("A")
+    canvas.cd()
+    test1 = ROOT.Double(0)
+    test2 = ROOT.Double(0)
+    for p in range( 0, graphs[0].GetN() + 1 ) :
+        graphs[0].GetPoint( p, test1, test2 )
+    #graphs[0].Draw("AC")
+    canvas.SaveAs("test.png")
+
+
 def main(argv=None):
-    print "Sweet"
+    mcf.rootStyle()
+    d = { "Filename":  "/home/hyper/Documents/mastercode_data/cmssm-bsgOrig-g2Orig.root",
+          "Var1":      138,
+          "Var2":      0,
+          "PlotVar":   1,
+          "Label":     "TEST",
+          "Short":     True,
+          "CalcMode":  "DeltaChi2",
+          "Xmax":      [3000],
+          "Xmin":      [0],
+          "Yoffset":   [0],
+          "Smoothing": [10],
+          "Color":     ROOT.kRed
+         }
+    p = { "Xmax":       5000.0,
+          "Xmin":       0.0,
+          "Ymax":       9.0,
+          "XAxisLabel": "TESTER LOL",
+          "YAxisLabel": "#Delta#Chi^{2}"
+        }
+    plotter = plotInfo( p )
+    spline = splineInfo( d )
+    slist = [spline]
+    graphs = getGraphs ( slist )
+    drawGraphs( graphs, plotter )
+
 
 if __name__ == "__main__":
     main()
