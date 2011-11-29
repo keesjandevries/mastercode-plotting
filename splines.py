@@ -112,7 +112,7 @@ def getGraphs( splinelist ) :
         graphlist.append(graph)
     return graphlist
 
-def drawGraphs( graphs, p ) :
+def drawGraphs( graphs, p, filename ) :
     canvas = ROOT.TCanvas( "splines", "Smoothing", 10, 10, 800, 400 )
     canvas.Draw("A")
     canvas.cd()
@@ -130,10 +130,28 @@ def drawGraphs( graphs, p ) :
             first = False
             graph.GetXaxis().SetRangeUser( p.xmin, p.xmax )
             graph.GetYaxis().SetRangeUser( 0, p.ymax )
-    canvas.SaveAs("test.png")
+    canvas.SaveAs(filename)
 
 
 def main(argv=None):
+    # you should to create a splineInfo object for *each* line you want to draw
+    # then, create a "plotInfo" that you want to define the properties of the
+    # canvas you're drawing too (axis range, etc.)
+    # dump the splineInfos into a list and send to drawGraphs with plotInfo.
+    # The advantage of doing it this way:  can create an mcplotting.py that
+    # contains various setups for differetn plots
+    # Can also have mc7_gluino as a spline object, this can then be drawn
+    # *easily* to any of our plots, overlayed with any number of other lines
+    # with their own styles and setup
+
+    # Note, I have some hesitancy about keeping the "color"/"width"/etc.
+    # properties with the graphs themselves.  I've gone this way because ROOT
+    # has made this choie already and I think we should probably live with that.
+    # It would be nicer to have a setup that deals with this at plot time.  i.e.
+    # splines are *just* a line that can be passed around and plotted in
+    # different plces with different colorsetups [ this can technically be
+    # implemented on top of what i already have ]
+
     mcf.rootStyle()
     d = { "Filename":  "/home/hyper/Documents/mastercode_data/cmssm-bsgOrig-g2Orig.root",
           "Var1":      138,
@@ -172,7 +190,7 @@ def main(argv=None):
     spline2 = splineInfo( e )
     slist = [spline1,spline2]
     graphs = getGraphs ( slist )
-    drawGraphs( graphs, plotter )
+    drawGraphs( graphs, plotter, "test.eps" )
 
 
 if __name__ == "__main__":
