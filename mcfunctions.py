@@ -2,6 +2,14 @@
 import ROOT
 from array import array
 
+def drawLabel(d):
+    ltext = ("#color[%d]{%s}") % ( d["LabelColor"], d["Label"] )
+    Tl = ROOT.TLatex()
+    Tl.SetNDC(True);
+    Tl.SetTextSize(d["LabelTextSize"]);
+    Tl.DrawLatex(d["LabelLocation"][0], d["LabelLocation"][1], ltext);
+    return;
+
 def getDirIndexFromMode(mode):
     out = -1
     if mode == "RawChi2":

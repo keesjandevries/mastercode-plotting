@@ -98,14 +98,6 @@ def drawContours(f,directory,conf,i):
                 more_graphs = False
     return
 
-def drawLabel(conf):
-    ltext = ("#color[%d]{%s}") % ( conf["LabelColor"], conf["Label"] )
-    Tl = ROOT.TLatex()
-    Tl.SetNDC(True);
-    Tl.SetTextSize(conf["LabelTextSize"]);
-    Tl.DrawLatex(conf["LabelLocation"][0], conf["LabelLocation"][1], ltext);
-    return;
-
 def main(argv=None):
     ROOT.gROOT.SetBatch(0)
     # import out configuration and command line options
@@ -139,7 +131,7 @@ def main(argv=None):
             # pad (apparently it's owned by hte file.  Need to make sure we
             # clean this up at the end.  i.e. iterate over gDirectory
 
-        drawLabel(conf)
+        mc.drawLabel(conf)
         outfile = "%s_%s_%d_%d.%s" % (conf["OutfilePrefix"], conf["ContourType"], \
             conf["Xvar"][i], conf["Yvar"][i], conf["OutfileType"] )
         canvas.SaveAs(outfile)
