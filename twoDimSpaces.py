@@ -120,8 +120,8 @@ def main(argv=None):
         canvas_title = "MCcontour_%d" % i
         canvas_name = "MC_%d" % i
         canvas = ROOT.TCanvas(canvas_name,canvas_title,1)
-        directory = mc.getPlotDirectory(x, y, conf["ContourType"], \
-            conf["ContribVar"], options.short)
+        directory = mc.getPlotDirectory( x, y, conf["ContourType"], \
+            options.short, conf["ContribVar"] )
         for filename in files:
             f = ROOT.TFile(filename)
             drawHistogram( f, directory, conf, i, blank_histogram )

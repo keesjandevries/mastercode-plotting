@@ -24,7 +24,7 @@ def getDirIndexFromMode(mode):
         out = 4
     return out
 
-def getPlotDirectory(x, y, space, contrib, short):
+def getPlotDirectory(x, y, space, short, contrib = None):
     assert space!="ObsContribution" or contrib, \
         "Need to specify which variable to plot the contribution of"
     index = getDirIndexFromMode(space)
