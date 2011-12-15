@@ -71,6 +71,14 @@ def makeSplineObject( filename, x, y, plotVar, calcMode, short = False, label = 
          }
     splineObj = splineInfo( d )
     return splineObj
+ 
+def getErrorBands( x_l, Err ) :
+    x_left, x_right = [], []
+    for x in x_l :
+        x_left.append(x - Err)
+        x_right.append(x + Err)
+    return x_left, x_right    
+
 
 def zeroSuppressHist( hist, xmin, xmax, yoffset = 0. ) :
     ymin = 1e9
@@ -185,12 +193,29 @@ def main(argv=None):
           "XAxisLabel": "TESTER LOL",
           "YAxisLabel": "#Delta#Chi^{2}"
         }
-    plotter = plotInfo( p )
-    spline1 = splineInfo( d )
-    spline2 = splineInfo( e )
-    slist = [spline1,spline2]
-    graphs = getGraphs ( slist )
-    drawGraphs( graphs, plotter, "test.eps" )
+    print "hello world"
+    x = [ 10,11,12,13,14,15,16,17 ]
+    y = [ 6,2,1,4,3,2,3,4 ]
+    Err = 1.5
+    x_left, x_right = getErrorBands(x,Err)
+    print x_left
+    print x
+    print x_right
+
+# So now we have the problem of determining which points to keep, as in
+# pathological cases there will be overlapping of the left ad right errors as we
+# step in x.
+# ,
+# 
+# notes on sickbag, have an idea but may need splining fo rsufficient resolution
+# (although maybe th1d maybe enough - 100points usually)
+
+#    plotter = plotInfo( p )
+#    spline1 = splineInfo( d )
+#    spline2 = splineInfo( e )
+#    slist = [spline1,spline2]
+#    graphs = getGraphs ( slist )
+#    drawGraphs( graphs, plotter, "test.eps" )
 
 
 if __name__ == "__main__":
