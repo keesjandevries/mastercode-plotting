@@ -1,0 +1,33 @@
+
+entry_histograms *don't* need MCchain as they only need to iterate one tree
+(either chi2tree or contribtree)
+
+Below also means there's no need for command line nonesense, it's all stored in
+some file
+
+have some class:
+    contains:
+    "File name"
+    "dictionary": [ list of histogram names with options ]
+    
+
+    maybe:
+    from collections import defaultdict
+
+    class RFile( object ) :
+        def __init__( self, fname ) :
+            self.filename = fname
+            self.plots = defaultdict(list)
+
+        def add_plot( self, directory, hist_name, logx = False, logy = False ) :
+            self.plots[directory].append( RPlot( hist_name, logx, logy ) )
+    
+
+    class RPlot( object ) :
+        def __init__( self, hname, logx, logy, OPTIONS ) :
+            self.name = hname
+            self.logx = logx
+            self.logy = logy
+            self.PRETTY_TITLE = "OMG LOOK AT ME"
+            # basically everything that defines the plot here
+
