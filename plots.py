@@ -1,28 +1,16 @@
 #! /usr/bin/env python
 
-import ROOT as r
 import plot_list as pl
-
-def get_hists( d ) :
-    hlist = []
-    for rfile in d.keys() :
-        hnames = []
-        for rdir in d[rfile].keys() :
-            for hname in d[rfile][rdir] :
-                hnames.append( "%s/%s" % ( rdir, hname ) )
-        f = r.TFile.Open( rfile )
-        r.gROOT.cd()
-        for hn in hnames :
-            hlist.append( f.Get( hn ).Clone() )
-        f.Close()
-    return hlist
-            
+import plot_options as po
 
 def main( argv=None ) :
-    d = pl.get_dict()
-    hl = get_hists( d )
-    print hl[1].FindBin(115,115)
+    fileout = "lol.pdf"
+    
+    d, tree_props = pl.get_file_dict()
+    hd = pl.get_hist_dict( d )
 
+    hists = pl.get_filled_hists( hd, tree_props )
+    po.print_to_single_file( hists, fileout )
 
 if __name__ == "__main__":
     main()
