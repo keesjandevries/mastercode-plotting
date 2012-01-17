@@ -4,7 +4,7 @@ import plot_list as pl
 import plot_options as po
 
 def main( argv=None ) :
-    fileout = "lol.pdf"
+    fileout = "sample_output.pdf"
     
     d, tree_props = pl.get_file_dict()
     hd = pl.get_hist_dict( d )
