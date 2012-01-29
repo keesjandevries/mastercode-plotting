@@ -62,3 +62,11 @@ def get_filled_hists( hdict, tree_props ) :
                     content = chain.chi2vars[0]
                 p_hists[-1].SetBinContent( i, content )
     return p_hists
+
+def save_hlist_to_root_file( hlist, filename ) :
+    f = r.TFile( filename, "UPDATE" )
+    f.cd()
+    for h in hlist :
+         h.Write("",r.TObject.kOverwrite)
+    f.close()
+
