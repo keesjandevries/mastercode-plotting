@@ -63,9 +63,13 @@ def get_filled_hists( hdict, tree_props ) :
                 p_hists[-1].SetBinContent( i, content )
     return p_hists
 
-def save_hlist_to_root_file( hlist, filename ) :
+def save_hlist_to_root_file( hlist, filename, directory = None ) :
     f = r.TFile( filename, "UPDATE" )
     f.cd()
+    if directory is not None :
+        if not f.cd( directory ) :
+            f.mkdir( directory ).cd()
+            f.cd( directory )
     for h in hlist :
          h.Write("",r.TObject.kOverwrite)
     f.close()
