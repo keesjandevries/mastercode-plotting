@@ -71,6 +71,6 @@ def save_hlist_to_root_file( hlist, filename, directory = None ) :
             f.mkdir( directory ).cd()
             f.cd( directory )
     for h in hlist :
-         h.Write("",r.TObject.kOverwrite)
-    f.close()
+        h.Write("",r.TObject.kOverwrite)
+    f.Close()
 
