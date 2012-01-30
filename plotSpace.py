@@ -12,17 +12,20 @@ import rootplot.root2matplotlib as r2m
 f = r2m.RootFile("/home/hyper/Documents/mastercode_data/cmssm_test.root")
 
 hists = [
-            f.get("chi2_histograms/iHist_1_2_chi2"),
-            f.get("chi2_histograms/iHist_1_4_chi2"),
-            f.get("chi2_histograms/iHist_2_4_chi2"),
+            f.get("data_histograms/iHist_1_2_chi2"),
+            f.get("data_histograms/iHist_1_2_pval"),
+            f.get("data_histograms/iHist_1_2_dchi"),
         ]
 
-fig = plt.figure(figsize=[6,6])
+fig = plt.figure(figsize=[8,5])
+
+mins = [ 0.0, 0.0, 0.0 ]
+maxs = [ 0.0, .25, 25. ]
+
 for i in range(3) :
-    fig.add_subplot(2, 3, i+1 )
+    fig.add_subplot(1, 3, i+1 )
     hists[i].colz()
-    #plt.clim(20,30)
-    fig.add_subplot(2, 3, i+4 )
-    hists[i].contour()
+    if i > 0 :
+        plt.clim(mins[i],maxs[i])
 
 plt.show()
