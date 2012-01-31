@@ -19,13 +19,13 @@ hists = [
 
 fig = plt.figure(figsize=[8,5])
 
-mins = [ 0.0, 0.0, 0.0 ]
-maxs = [ 0.0, .25, 25. ]
+mins = [ 20.0, 0.0, 0.0 ]
+maxs = [ 30.0, .20, 25. ]
 
 for i in range(3) :
     fig.add_subplot(1, 3, i+1 )
     hists[i].colz()
-    if i > 0 :
-        plt.clim(mins[i],maxs[i])
+    plt.clim(mins[i],maxs[i])
 
 plt.show()
+#plt.savefig("test.pdf")
