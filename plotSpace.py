@@ -20,9 +20,9 @@ hists = [
             f.get("data_histograms/iHist_1_4_chi2"),
             f.get("data_histograms/iHist_1_4_pval"),
             f.get("data_histograms/iHist_1_4_dchi"),
-            f.get("data_histograms/iHist_2_4_chi2"),
-            f.get("data_histograms/iHist_2_4_pval"),
-            f.get("data_histograms/iHist_2_4_dchi"),
+            f.get("data_histograms/iHist_4_2_chi2"),
+            f.get("data_histograms/iHist_4_2_pval"),
+            f.get("data_histograms/iHist_4_2_dchi"),
         ]
 
 fig = plt.figure(figsize=[16,12])
@@ -37,12 +37,12 @@ levels = [ [ 22.23, 25.99 ], [ 0.05, 0.10 ], [ 2.23, 5.99 ], ]
 colors = [ [ 'r', 'b' ],     [ 'r', 'b' ],   [ 'r', 'b' ], ]
 
 # labelled by j
-xaxis_labels= [ r"$m_{0} [GeV/c^{2}]$", r"$m_{0} [GeV/c^{2}]$", r"$m_{1/2} [GeV/c^{2}]$" ]
-yaxis_labels= [ r"$m_{1/2} [GeV/c^{2}]$", r"$\tan(\beta)$", r"$\tan(\beta)$" ]
-ranges = [ [0,1500,0,1500], [0,1500,0,60], [0,1500,0,60] ]
+xaxis_labels= [ r"$m_{0} [GeV/c^{2}]$", r"$m_{0} [GeV/c^{2}]$", r"$\tan(\beta)$" ]
+yaxis_labels= [ r"$m_{1/2} [GeV/c^{2}]$", r"$\tan(\beta)$", r"$m_{1/2} [GeV/c^{2}]$" ]
+ranges = [ [0,1500,0,1500], [0,1500,0,60], [0,60,0,1500] ]
 
-ytick_steps = [ 500, 10, 10 ]
-xtick_steps = [ 500, 500, 500 ]
+ytick_steps = [ 500, 10, 500 ]
+xtick_steps = [ 500, 500, 10 ]
 
 ax_list = []
 for i in range(3) :
@@ -51,7 +51,7 @@ for i in range(3) :
         ax_list[-1].set_xlabel( xaxis_labels[j] )
         ax_list[-1].set_ylabel( yaxis_labels[j] )
         plt.axis(ranges[j])
-        hists[i+j*3].contour( levels=levels[i], colors = colors[i] )
+        hists[i+j*3].contour( levels=levels[i], colors = colors[i], linewidths=2 )
         hists[i+j*3].colz()
         plt.axis(ranges[j])
         plt.clim(mins[i],maxs[i])
