@@ -11,7 +11,7 @@ import rootplot.root2matplotlib as r2m
 #matplotlib.rcParams['figure.subplot.hspace'] = 0.0 # no space between subplots
 
 
-f = r2m.RootFile("/home/hyper/Documents/mastercode_data/cmssm_test.root")
+f = r2m.RootFile("~/Documents/mastercode_data/cmssm_test.root")
 
 hists = [
             f.get("data_histograms/iHist_1_2_chi2"),
