@@ -1,4 +1,4 @@
-from default_plots import getDefaults as pds
+from defaults.default_plots import getDefaults as pds
 
 histos = { 
             "data_histograms/iHist_1_2_chi2" : pds("m0",  "m12", "chi2"),
