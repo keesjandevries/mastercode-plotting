@@ -12,7 +12,7 @@ sml_plot_size = [5,3]
 def makeSinglePlots( histos, filename = "~/Documents/mastercode_data/recalc_out.root" ) :
     i=0
     f = r2m.RootFile(filename)
-    for hname, options in hl.histos.iteritems() :
+    for hname, options in histos.iteritems() :
         hist = f.get(hname)
         i += 1
         fig = plt.figure( figsize=[8,6] )
@@ -87,7 +87,7 @@ def makeGridPlots( histos, filename = "~/Documents/mastercode_data/recalc_out.ro
     plt.savefig("test.png")
 
 def main() :
-    histos = hl.histos
+    histos = hl.spaces
     makeSinglePlots(histos)
 
 if __name__ == "__main__":
