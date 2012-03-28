@@ -1,6 +1,6 @@
 from defaults.default_plots import getDefaults as pds
 
-histos = { 
+spaces = { 
             "data_histograms/iHist_1_2_chi2" : pds("m0",  "m12", "chi2"),
             "data_histograms/iHist_1_2_pval" : pds("m0",  "m12", "pval"),
             "data_histograms/iHist_1_2_dchi" : pds("m0",  "m12", "dchi"),
