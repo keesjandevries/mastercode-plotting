@@ -6,34 +6,32 @@ import ROOT
 import rootplot.root2matplotlib as r2m
 from config import histo_list as hl
 
-#matplotlib.rcParams['figure.subplot.wspace'] = 0.0 # no space between subplots
-#matplotlib.rcParams['figure.subplot.hspace'] = 0.0 # no space between subplots
+full_plot_size = [8,6]
+sml_plot_size = [5,3]
 
-
-f = r2m.RootFile("~/Documents/mastercode_data/recalc_out.root")
-
-histos = hl.histos
-i=0
-for hname, options in hl.histos.iteritems() :
-    hist = f.get(hname)
-    i += 1
-    fig = plt.figure( figsize=[8,6] )
-    plt.axis( options["xrange"] + options["yrange"] )
-    axes = plt.axes()
-    axes.set_xlabel( options["xlabel"] )
-    axes.set_ylabel( options["ylabel"] )
-    hist.contour( levels = options["contours"], colors = options["colors"], linewidths = 2 )
-    hist.colz()
-    plt.axis( options["xrange"] + options["yrange"] )
-    plt.clim( *options["zrange"] )
-    pylab.yticks(pylab.arange( options["yrange"][0], options["yrange"][1], options["yticks"] ) )
-    pylab.xticks(pylab.arange( options["xrange"][0], options["xrange"][1], options["xticks"] ) )
-    axes.set_title( options["title"] )
-    plt.savefig("test_%d.png" % i )
+def makeSinglePlots( histos, filename = "~/Documents/mastercode_data/recalc_out.root" ) :
+    i=0
+    f = r2m.RootFile(filename)
+    for hname, options in hl.histos.iteritems() :
+        hist = f.get(hname)
+        i += 1
+        fig = plt.figure( figsize=[8,6] )
+        plt.axis( options["xrange"] + options["yrange"] )
+        axes = plt.axes()
+        axes.set_xlabel( options["xlabel"] )
+        axes.set_ylabel( options["ylabel"] )
+        hist.contour( levels = options["contours"], colors = options["colors"], linewidths = 2 )
+        hist.colz()
+        plt.axis( options["xrange"] + options["yrange"] )
+        plt.clim( *options["zrange"] )
+        pylab.yticks(pylab.arange( options["yrange"][0], options["yrange"][1], options["yticks"] ) )
+        pylab.xticks(pylab.arange( options["xrange"][0], options["xrange"][1], options["xticks"] ) )
+        axes.set_title( options["title"] )
+        plt.savefig("test_%d.png" % i )
     
 
-def oldCode() :
-    # old code
+def makeGridPlots( histos, filename = "~/Documents/mastercode_data/recalc_out.root" ) :
+    # old code : doesnt owrk
     hists = [ 
        f.get("data_histograms/iHist_1_2_chi2"),
        f.get("data_histograms/iHist_1_2_pval"),
@@ -85,3 +83,10 @@ def oldCode() :
 
     #plt.show()
     plt.savefig("test.png")
+
+def main() :
+    histos = hl.histos
+    makeSinglePlots(histos)
+
+if __name__ == "__main__":
+    main()
