@@ -1,21 +1,13 @@
-import sys
-sys.path.append( "../modules/" )
-import plot_defaults as pd
+from default_plots import getDefaults as pds
 
 histos = { 
-            "data_histograms/iHist_1_2_chi2" : 
-            {
-                "title"  : pd.titles["chi2"]
-                "xlabel" : pd.labels["m0"]
-                "ylabel" : pd.labels["m12"] 
-                "xrange" : [0,
-
-  histo_list =  [ "data_histograms/iHist_1_2_chi2",
-                  "data_histograms/iHist_1_2_pval",
-                  "data_histograms/iHist_1_2_dchi",
-                  "data_histograms/iHist_1_4_chi2",
-                  "data_histograms/iHist_1_4_pval",
-                  "data_histograms/iHist_1_4_dchi",
-                  "data_histograms/iHist_4_2_chi2",
-                  "data_histograms/iHist_4_2_pval",
-                  "data_histograms/iHist_4_2_dchi"]
+            "data_histograms/iHist_1_2_chi2" : pds("m0",  "m12", "chi2"),
+            "data_histograms/iHist_1_2_pval" : pds("m0",  "m12", "pval"),
+            "data_histograms/iHist_1_2_dchi" : pds("m0",  "m12", "dchi"),
+            "data_histograms/iHist_1_4_chi2" : pds("m0",  "tanb","chi2"),
+            "data_histograms/iHist_1_4_pval" : pds("m0",  "tanb","pval"),
+            "data_histograms/iHist_1_4_dchi" : pds("m0",  "tanb","dchi"),
+            "data_histograms/iHist_4_2_chi2" : pds("tanb","m12", "chi2"),
+            "data_histograms/iHist_4_2_pval" : pds("tanb","m12", "pval"),
+            "data_histograms/iHist_4_2_dchi" : pds("tanb","m12", "dchi"),
+         }

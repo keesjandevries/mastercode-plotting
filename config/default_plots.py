@@ -30,17 +30,25 @@ tanbm12Base = {
                 "yticks"   : pd.ticks["m12"],
               }
 
+
+# lots of replications : need sto be done more intelligently
 chi2Base = {
-                "titles"   : pd.titles["chi2"],
+                "title"    : pd.titles["chi2"],
                 "contours" : pd.cLevelDelta(20.),
+                "colors"   : pd.colors,
+                "zrange"   : pd.zrange["chi2"]
            }
 
 pvalBase = {
-                "titles"   : pd.titles["pval"],
+                "title"    : pd.titles["pval"],
                 "contours" : pd.clevels["pval"],
+                "colors"   : pd.colors,
+                "zrange"   : pd.zrange["pval"]
            }
 
 dchiBase = {
-                "titles"   : pd.titles["dchi"],
+                "title"    : pd.titles["dchi"],
                 "contours" : pd.clevels["dchi"],
+                "colors"   : pd.colors,
+                "zrange"   : pd.zrange["dchi"]
            }
