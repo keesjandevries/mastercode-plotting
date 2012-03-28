@@ -22,9 +22,6 @@ for hname, options in hl.histos.iteritems() :
     axes = plt.axes()
     axes.set_xlabel( options["xlabel"] )
     axes.set_ylabel( options["ylabel"] )
-    print options["title"]
-    print options["contours"]
-    print "---"
     hist.contour( levels = options["contours"], colors = options["colors"], linewidths = 2 )
     hist.colz()
     plt.axis( options["xrange"] + options["yrange"] )
@@ -34,8 +31,6 @@ for hname, options in hl.histos.iteritems() :
     axes.set_title( options["title"] )
     plt.savefig("test_%d.png" % i )
     
-
-
 # old code
 hists = [ 
    f.get("data_histograms/iHist_1_2_chi2"),
