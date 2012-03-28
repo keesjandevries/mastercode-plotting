@@ -14,29 +14,40 @@ f = r2m.RootFile("~/Documents/mastercode_data/recalc_out.root")
 
 histos = hl.histos
 i=0
-for hist, options in hl.histos.iteritems() :
+for hname, options in hl.histos.iteritems() :
+    hist = f.get(hname)
     i += 1
     fig = plt.figure( figsize=[8,6] )
-    print options
-    ax = plt.axis( options["xrange"].extend( options["yrange"] ) )
-    ax.set_xlabel( options["xlabel"] )
-    ax.set_ylabel( options["ylabel"] )
+    plt.axis( options["xrange"] + options["yrange"] )
+    axes = plt.axes()
+    axes.set_xlabel( options["xlabel"] )
+    axes.set_ylabel( options["ylabel"] )
+    print options["title"]
+    print options["contours"]
+    print "---"
     hist.contour( levels = options["contours"], colors = options["colors"], linewidths = 2 )
     hist.colz()
-    plt.axis( options["xrange"].extend( options["yrange"] ) )
+    plt.axis( options["xrange"] + options["yrange"] )
     plt.clim( *options["zrange"] )
     pylab.yticks(pylab.arange( options["yrange"][0], options["yrange"][1], options["yticks"] ) )
     pylab.xticks(pylab.arange( options["xrange"][0], options["xrange"][1], options["xticks"] ) )
-    ax.set_title( options["title"] )
+    axes.set_title( options["title"] )
     plt.savefig("test_%d.png" % i )
     
 
-assert False
-hists = [ f.get(h) for h in sorted(histos.keys()) ]
-print sorted(histos.keys())
 
-
-
+# old code
+hists = [ 
+   f.get("data_histograms/iHist_1_2_chi2"),
+   f.get("data_histograms/iHist_1_2_pval"),
+   f.get("data_histograms/iHist_1_2_dchi"),
+   f.get("data_histograms/iHist_1_4_chi2"),
+   f.get("data_histograms/iHist_1_4_pval"),
+   f.get("data_histograms/iHist_1_4_dchi"),
+   f.get("data_histograms/iHist_4_2_chi2"),
+   f.get("data_histograms/iHist_4_2_pval"),
+   f.get("data_histograms/iHist_4_2_dchi"),
+]
 
 fig = plt.figure(figsize=[16,12])
 
