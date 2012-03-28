@@ -1,20 +1,15 @@
 #! /usr/bin/env python
-
-
 import matplotlib
 import matplotlib.pyplot as plt
 import pylab
 import ROOT
-import rootpy.root2matplotlib as rplt
-
-from rootpy.io import open
+import rootplot.root2matplotlib as r2m
 
 #matplotlib.rcParams['figure.subplot.wspace'] = 0.0 # no space between subplots
 #matplotlib.rcParams['figure.subplot.hspace'] = 0.0 # no space between subplots
 
-# http://ndawe.github.com/rootpy/tutorials/plotting.html
 
-f = open("~/Documents/mastercode_data/recalc_out.root")
+f = r2m.RootFile("~/Documents/mastercode_data/recalc_out.root")
 
 hists = [
             f.get("data_histograms/iHist_1_2_chi2"),
@@ -54,8 +49,8 @@ for i in range(3) :
         ax_list[-1].set_xlabel( xaxis_labels[j] )
         ax_list[-1].set_ylabel( yaxis_labels[j] )
         plt.axis(ranges[j])
-        hists[i+j*3].Draw("contours")
-        hists[i+j*3].Draw("colz")
+        hists[i+j*3].contour( levels=levels[i], colors = colors[i], linewidths=2 )
+        hists[i+j*3].colz()
         plt.axis(ranges[j])
         plt.clim(mins[i],maxs[i])
         pylab.yticks(pylab.arange(ranges[j][2], ranges[j][3]+1, ytick_steps[j]))
