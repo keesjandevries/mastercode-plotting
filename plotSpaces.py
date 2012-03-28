@@ -16,16 +16,18 @@ def makeSinglePlots( histos, filename = "~/Documents/mastercode_data/recalc_out.
         hist = f.get(hname)
         i += 1
         fig = plt.figure( figsize=[8,6] )
-        plt.axis( options["xrange"] + options["yrange"] )
+        xmin,xmax = options["xrange"]
+        ymin,ymax = options["yrange"]
+        plt.axis( [xmin, xmax, ymin, ymax] )
         axes = plt.axes()
         axes.set_xlabel( options["xlabel"] )
         axes.set_ylabel( options["ylabel"] )
         hist.contour( levels = options["contours"], colors = options["colors"], linewidths = 2 )
         hist.colz()
-        plt.axis( options["xrange"] + options["yrange"] )
+        plt.axis( [xmin, xmax, ymin, ymax] )
         plt.clim( *options["zrange"] )
-        pylab.yticks(pylab.arange( options["yrange"][0], options["yrange"][1], options["yticks"] ) )
-        pylab.xticks(pylab.arange( options["xrange"][0], options["xrange"][1], options["xticks"] ) )
+        pylab.yticks(pylab.arange( ymin, ymax+0.1, options["yticks"] ) )
+        pylab.xticks(pylab.arange( xmin, xmax+0.1, options["xticks"] ) )
         axes.set_title( options["title"] )
         plt.savefig("test_%d.png" % i )
     
