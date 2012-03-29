@@ -1,5 +1,8 @@
 from defaults.default_plots import getDefaults as pds
 
+def getSpaceDict() :
+    return spaces
+
 spaces = { 
             "data_histograms/iHist_1_2_chi2" : pds("m0",  "m12", "chi2"),
             "data_histograms/iHist_1_2_pval" : pds("m0",  "m12", "pval"),
