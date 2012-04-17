@@ -31,6 +31,7 @@ def makeSingleSpacePlot( histos, filename = "~/Documents/mastercode_data/recalc_
 
 def makeGridPlots( histos, filename = "~/Documents/mastercode_data/recalc_out.root" ) :
     # old code : doesnt owrk
+    f = r2m.RootFile(filename)
     hists = [ 
        f.get("data_histograms/iHist_1_2_chi2"),
        f.get("data_histograms/iHist_1_2_pval"),
@@ -81,4 +82,4 @@ def makeGridPlots( histos, filename = "~/Documents/mastercode_data/recalc_out.ro
         ax_list[i].set_title( titles[i/3] )
 
     #plt.show()
-    plt.savefig("test.png")
+    plt.savefig("grid.png")
