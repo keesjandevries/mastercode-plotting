@@ -50,4 +50,4 @@ def makeSingle1DPlot( histos, filename = "~/Documents/mastercode_data/recalc_out
             axes.set_ylabel( options["title"] )
             pylab.xticks(pylab.arange( xmin, xmax+0.1, options["xticks"] ) )
             axes.set_title( "%s(%s)" % (options["title"], options["xlabel"]) )
-            plt.savefig("test_%d.png" % i )
+            plt.savefig("spline_%d.png" % i )

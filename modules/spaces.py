@@ -27,7 +27,7 @@ def makeSingleSpacePlot( histos, filename = "~/Documents/mastercode_data/recalc_
         pylab.yticks(pylab.arange( ymin, ymax+0.1, options["yticks"] ) )
         pylab.xticks(pylab.arange( xmin, xmax+0.1, options["xticks"] ) )
         axes.set_title( options["title"] )
-        plt.savefig("test_%d.png" % i )
+        plt.savefig("space_%d.png" % i )
 
 def makeGridPlots( histos, filename = "~/Documents/mastercode_data/recalc_out.root" ) :
     # old code : doesnt owrk
