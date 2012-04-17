@@ -57,5 +57,6 @@ dchiBase = {
                 "title"    : pd.titles["dchi"],
                 "contours" : pd.clevels["dchi"],
                 "colors"   : pd.colors,
-                "zrange"   : pd.zrange["dchi"]
+                "zrange"   : pd.zrange["dchi"],
+                "zrange1d" : pd.zrange["dchi1d"]
            }

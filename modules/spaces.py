@@ -7,25 +7,6 @@ import rootplot.root2matplotlib as r2m
 full_plot_size = [8,6]
 sml_plot_size = [5,3]
 
-def makeSingle1DPlot( histos, filename = "~/Documents/mastercode_data/recalc_out.root" ) :
-    i=0
-    f = r2m.RootFile(filename)
-    for hname, options in histos.iteritems() :
-        hist = f.get(hname)
-        i += 1
-        fig = plt.figure( figsize=[8,6] )
-        xmin,xmax = options["xrange"]
-        ymin,ymax = options["zrange"]
-        plt.axis( [xmin, xmax, ymin, ymax] )
-        axes = plt.axes()
-        axes.set_xlabel( options["xlabel"] )
-        axes.set_ylabel( options["title"] )
-        hist.bar()
-        plt.axis( [xmin, xmax, ymin, ymax] )
-        pylab.xticks(pylab.arange( xmin, xmax+0.1, options["xticks"] ) )
-        axes.set_title( options["xlabel"] + options["title"] )
-        plt.savefig("test_%d.png" % i )
-
 def makeSingleSpacePlot( histos, filename = "~/Documents/mastercode_data/recalc_out.root" ) :
     i=0
     f = r2m.RootFile(filename)

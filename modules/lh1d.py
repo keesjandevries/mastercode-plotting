@@ -1,0 +1,53 @@
+import matplotlib
+import matplotlib.pyplot as plt
+import pylab
+import ROOT
+import rootplot.root2matplotlib as r2m
+
+import numpy as np
+from scipy import interpolate
+
+def find(f, seq):
+    for i,item in enumerate(seq):
+        if f(item): 
+            return i
+
+def get_valid_segments( seq, minval, maxval ) :
+    get_first = lambda val: val<maxval
+    get_last  = lambda val: val>maxval
+    
+    segs = []
+    fp = find( get_first, seq )
+    lp = fp + find( get_last, seq[fp:] )
+    fp -= 1
+    segs.append( [fp,lp] )
+    return segs
+
+def makeSingle1DPlot( histos, filename = "~/Documents/mastercode_data/recalc_out.root" ) :
+    i=0
+    f = r2m.RootFile(filename)
+    for hname, options in histos.iteritems() :
+        hist = f.get(hname)
+        xmin,xmax = options["xrange"]
+        ymin,ymax = options["zrange1d"]
+        y, x, patch  = hist.hist()
+        
+        segs = get_valid_segments( y, options["zrange"][0], options["zrange"][1] )
+        for seg in segs :
+            i += 1
+            y[seg[0]] = options["zrange1d"][1]
+            y[seg[1]] = options["zrange1d"][1]
+
+            tck = interpolate.splrep(x[seg[0]:seg[1]],y[seg[0]:seg[1]],s=0)
+            xnew = np.arange(x[seg[0]],x[seg[1]],(x[seg[1]]-x[seg[0]])/200)
+            ynew = interpolate.splev(xnew,tck,der=0)
+            ynew[-1] = options["zrange1d"][1]
+            plt.figure()
+            plt.plot(xnew,ynew,'b')
+            plt.axis( [xmin, xmax, ymin, ymax] )
+            axes = plt.axes()
+            axes.set_xlabel( options["xlabel"] )
+            axes.set_ylabel( options["title"] )
+            pylab.xticks(pylab.arange( xmin, xmax+0.1, options["xticks"] ) )
+            axes.set_title( options["xlabel"] + options["title"] )
+            plt.savefig("test_%d.png" % i )
