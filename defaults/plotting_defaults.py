@@ -8,6 +8,7 @@ titles = { "chi2": r"$\chi^{2}$",
 labels = { "m0"   : r"$m_{0} [GeV/c^{2}]$",
            "m12"  : r"$m_{1/2} [GeV/c^{2}]$", 
            "tanb" : r"$\tan(\beta)$",
+           "neu1" : r"$m_{\chi^{0}_{1}} [GeV/c^{2}]$",
          }
 
 ranges = { "m0"   : [0, 2500],
@@ -15,11 +16,13 @@ ranges = { "m0"   : [0, 2500],
            "tanb" : [0, 60],
            "m0small"  : [0, 1500],
            "m12small" : [0, 1500],
+           "neu1" : [0, 600],
          }
 
 ticks = { "m0"   : 500,
           "m12"  : 500,
           "tanb" : 10,
+          "neu1" : 100,
         }
 
 colors = [ 'r', 'b' ]

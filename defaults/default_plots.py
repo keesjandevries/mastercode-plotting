@@ -1,7 +1,9 @@
 import plotting_defaults as pd
 
-def getDefaults( xaxis, yaxis, mode ) :
-    return eval("dict(%s%sBase.items() + %sBase.items())" % ( xaxis, yaxis, mode ) )
+def getDefaults( mode, *axes ) :
+    axes_format = "%s"*len(axes)
+    format_string = "dict(" + axes_format + "Base.items() +%sBase.items())"
+    return eval( format_string % tuple( list(axes) + [mode] ) )
 
 m0m12Base = {
                 "xlabel"   : pd.labels["m0"],
@@ -30,6 +32,11 @@ tanbm12Base = {
                 "yticks"   : pd.ticks["m12"],
               }
 
+neu1Base = {
+             "xlabel" : pd.labels["neu1"],
+             "xrange" : pd.ranges["neu1"],
+             "xticks" : pd.ticks["neu1"],
+           }
 
 # lots of replications : need sto be done more intelligently
 chi2Base = {
