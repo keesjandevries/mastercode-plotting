@@ -29,6 +29,8 @@ def get_valid_segments( seq, minval, maxval ) :
             segs.append( [fp-1,lp] )
 
         lp+=1
+    if len(segs) == 0 :
+        segs = [ [0,len(seq)] ]
     return segs
 
 def makeSingle1DPlot( histos, filename = "~/Documents/mastercode_data/recalc_out.root" ) :
