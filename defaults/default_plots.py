@@ -38,6 +38,12 @@ neu1Base = {
              "xticks" : pd.ticks["neu1"],
            }
 
+mhBase = {
+             "xlabel" : pd.labels["mh"],
+             "xrange" : pd.ranges["mh"],
+             "xticks" : pd.ticks["mh"],
+           }
+
 # lots of replications : need sto be done more intelligently
 chi2Base = {
                 "title"    : pd.titles["chi2"],
