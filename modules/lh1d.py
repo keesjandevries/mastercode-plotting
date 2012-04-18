@@ -24,8 +24,8 @@ def get_valid_segments( seq, minval, maxval ) :
     while fp < (len(seq)-1) :
         fp = find( get_first, seq[lp:] ) + lp
         lp = fp + find( get_last, seq[fp:] )
-
-        if fp-lp > 2 :
+        
+        if lp-fp > 2 :
             segs.append( [fp-1,lp] )
 
         lp+=1
@@ -35,6 +35,7 @@ def makeSingle1DPlot( histos, filename = "~/Documents/mastercode_data/recalc_out
     i=0
     f = r2m.RootFile(filename)
     for hname, options in histos.iteritems() :
+        print hname
         hist = f.get(hname)
         xmin,xmax = options["xrange"]
         ymin,ymax = options["zrange1d"]
