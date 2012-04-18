@@ -9,7 +9,7 @@ from scipy import interpolate
 
 def find(f, seq):
     for i,item in enumerate(seq):
-        if f(item): 
+        if f(item) or i == (len(seq)-1) :
             return i
 
 def get_valid_segments( seq, minval, maxval ) :
@@ -17,16 +17,25 @@ def get_valid_segments( seq, minval, maxval ) :
     get_last  = lambda val: val>maxval
     
     segs = []
-    fp = find( get_first, seq )
-    lp = fp + find( get_last, seq[fp:] )
-    fp -= 1
-    segs.append( [fp,lp] )
+    # find the first segment, then splice the list seq[lp+1:] and run again
+    lp = 0
+    fp = 0
+
+    while fp < (len(seq)-1) :
+        fp = find( get_first, seq[lp:] ) + lp
+        lp = fp + find( get_last, seq[fp:] )
+        
+        if lp-fp > 2 :
+            segs.append( [fp-1,lp] )
+
+        lp+=1
     return segs
 
 def makeSingle1DPlot( histos, filename = "~/Documents/mastercode_data/recalc_out.root" ) :
     i=0
     f = r2m.RootFile(filename)
     for hname, options in histos.iteritems() :
+        print hname
         hist = f.get(hname)
         xmin,xmax = options["xrange"]
         ymin,ymax = options["zrange1d"]
