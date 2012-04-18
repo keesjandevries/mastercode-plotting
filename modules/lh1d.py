@@ -35,7 +35,6 @@ def makeSingle1DPlot( histos, filename = "~/Documents/mastercode_data/recalc_out
     i=0
     f = r2m.RootFile(filename)
     for hname, options in histos.iteritems() :
-        print hname
         hist = f.get(hname)
         xmin,xmax = options["xrange"]
         ymin,ymax = options["zrange1d"]
