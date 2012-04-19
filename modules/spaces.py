@@ -7,7 +7,7 @@ import rootplot.root2matplotlib as r2m
 full_plot_size = [8,6]
 sml_plot_size = [5,3]
 
-def makeSingleSpacePlot( histos, filename = "~/Documents/mastercode_data/recalc_out.root" ) :
+def makeSingleSpacePlot( histos, filename ) :
     i=0
     f = r2m.RootFile(filename)
     for hname, options in histos.iteritems() :
@@ -29,7 +29,7 @@ def makeSingleSpacePlot( histos, filename = "~/Documents/mastercode_data/recalc_
         axes.set_title( options["title"] )
         plt.savefig("space_%d.png" % i )
 
-def makeGridPlots( histos, filename = "~/Documents/mastercode_data/recalc_out.root" ) :
+def makeGridPlots( histos, filename ) :
     # old code : doesnt owrk
     f = r2m.RootFile(filename)
     hists = [ 
