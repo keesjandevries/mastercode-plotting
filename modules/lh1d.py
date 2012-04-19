@@ -33,7 +33,7 @@ def get_valid_segments( seq, minval, maxval ) :
         segs = [ [0,len(seq)] ]
     return segs
 
-def makeSingle1DPlot( histos, filename = "~/Documents/mastercode_data/recalc_out.root" ) :
+def makeSingle1DPlot( histos, filename ) :
     i=0
     f = r2m.RootFile(filename)
     for hname, options in histos.iteritems() :
