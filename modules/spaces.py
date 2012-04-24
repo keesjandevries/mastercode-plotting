@@ -46,7 +46,9 @@ def makeGridPlots( histos, filename = "~/Documents/mastercode_data/recalc_out.ro
     hists = [ f.get(hist) for hist in sorted(histos.keys()) ]
     opts  = [ histos[key] for key  in sorted(histos.keys()) ]
 
-    fig = plt.figure(figsize=[ce*sml_plot_size[0],fl*sml_plot_size[1]])
+    fig = plt.figure(figsize=[ce*(sml_plot_size[0]+fl),fl*(sml_plot_size[1]+fl)])
+    #fig.subplots_adjust(left=1, right=2, top=2, bottom=1)
+
 
     ax_list = []
     for h, (hist,opt) in enumerate(zip(hists,opts)) :
@@ -63,7 +65,6 @@ def makeGridPlots( histos, filename = "~/Documents/mastercode_data/recalc_out.ro
         pylab.yticks(pylab.arange(ymin, ymax, opt["yticks"]))
         pylab.xticks(pylab.arange(xmin, xmax, opt["xticks"]))
         ax_list[-1].set_title( opt["title"] )
-
 
     #plt.show()
     plt.savefig("grid.png")
