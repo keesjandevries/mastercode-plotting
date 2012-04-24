@@ -1,0 +1,9 @@
+* per file setup (cf config in mastercode-tools)
+    i.e. dictionary:
+        d = {
+                "filename.root": 
+                {
+                    "planes"  : [ "iHist...." ]
+                    "splines" : [ "iHist...." ]
+                }
+            }
