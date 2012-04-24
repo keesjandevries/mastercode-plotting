@@ -8,10 +8,13 @@ from math import sqrt
 from math import floor
 from math import ceil
 
+from plotnames import fig_name
+from plotnames import grid_name
+
 full_plot_size = [8,6]
 sml_plot_size = [4,3]
 
-def makeSingleSpacePlot( histos, filename ) :
+def makeSingleSpacePlot( histos, filename, ext="png" ) :
     i=0
     f = r2m.RootFile(filename)
     for hname, options in histos.iteritems() :
@@ -31,9 +34,9 @@ def makeSingleSpacePlot( histos, filename ) :
         pylab.yticks(pylab.arange( ymin, ymax+0.1, options["yticks"] ) )
         pylab.xticks(pylab.arange( xmin, xmax+0.1, options["xticks"] ) )
         axes.set_title( options["title"] )
-        plt.savefig("space_%d.png" % i )
+        plt.savefig( fig_name( options, filename ) + ".%s" % ext )
 
-def makeGridPlots( histos, filename ) :
+def makeGridPlots( histos, filename, ext="png" ) :
     # old code : doesnt owrk
     nplot = len( histos.keys() )
     sh = sqrt( nplot )
@@ -67,4 +70,4 @@ def makeGridPlots( histos, filename ) :
         ax_list[-1].set_title( opt["title"] )
 
     #plt.show()
-    plt.savefig("grid.png")
+    plt.savefig( grid_name( filename ) + ".%s" % ext )

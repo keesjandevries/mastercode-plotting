@@ -7,6 +7,8 @@ import rootplot.root2matplotlib as r2m
 import numpy as np
 from scipy import interpolate
 
+from plotnames import fig_name
+
 def find(f, seq):
     for i,item in enumerate(seq):
         if f(item) or i == (len(seq)-1) :
@@ -33,7 +35,7 @@ def get_valid_segments( seq, minval, maxval ) :
         segs = [ [0,len(seq)] ]
     return segs
 
-def makeSingle1DPlot( histos, filename ) :
+def makeSingle1DPlot( histos, filename, ext="png" ) :
     i=0
     f = r2m.RootFile(filename)
     for hname, options in histos.iteritems() :
@@ -60,4 +62,4 @@ def makeSingle1DPlot( histos, filename ) :
             axes.set_ylabel( options["title"] )
             pylab.xticks(pylab.arange( xmin, xmax+0.1, options["xticks"] ) )
             axes.set_title( "%s(%s)" % (options["title"], hist.xlabel) )
-            plt.savefig("spline_%d.png" % i )
+        plt.savefig( fig_name( options, filename ) + ".%s" % ext )
