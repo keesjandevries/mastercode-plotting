@@ -8,10 +8,10 @@ from sys import argv
 def main() :
     spaces = hl.getSpaceDict()
     histos = hl.get1DDict()
-    for file in argv[1:] :
-        s.makeSingleSpacePlot(spaces, file)
-        s.makeGridPlots(spaces, file)
-        lh.makeSingle1DPlot(histos, file)
+    for f in argv[1:] :
+        s.makeSingleSpacePlot(spaces, f, "png")
+        s.makeGridPlots(spaces, f, "png")
+        lh.makeSingle1DPlot(histos, f, "png")
 
 if __name__ == "__main__":
     main()

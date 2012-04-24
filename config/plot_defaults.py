@@ -1,22 +1,25 @@
 def getDefaults( mode, *axes ) :
     axes_format = "%s"*len(axes)
     format_string = "dict(" + axes_format + "Base.items() +%sBase.items())"
-    return eval( format_string % tuple( list(axes) + [mode] ) )
+    d = eval( format_string % tuple( list(axes) + [mode] ) )
+    d["short_names"] = list(axes)
+    d["mode"] = mode
+    return d
 
 # per value
 ticks = { 
-          "m0"   : 500,
-          "m12"  : 500,
-          "tanb" : 10,
-          "neu1" : 100,
-          "mh"   : 5,
+          "m0"    : 500,
+          "m12"   : 500,
+          "tanb"  : 10,
+          "mneu1" : 100,
+          "mh"    : 5,
         }
 
 m0m12Base   = { "xticks" : ticks["m0"],   "yticks" : ticks["m12"],  }
 m0tanbBase  = { "xticks" : ticks["m0"],   "yticks" : ticks["tanb"], }
 tanbm12Base = { "xticks" : ticks["tanb"], "yticks" : ticks["m12"],  }
-neu1Base    = { "xticks" : ticks["neu1"], } 
-mhBase = { "xticks" : ticks["mh"], } 
+mneu1Base   = { "xticks" : ticks["mneu1"], }
+mhBase      = { "xticks" : ticks["mh"], }
 
 # per type
 colors  = [ 'r', 'b' ]
