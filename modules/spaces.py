@@ -14,8 +14,8 @@ def makeSingleSpacePlot( histos, filename = "~/Documents/mastercode_data/recalc_
         hist = f.get(hname)
         i += 1
         fig = plt.figure( figsize=[8,6] )
-        xmin,xmax = hist.yedges[0], hist.yedges[-1]
-        ymin,ymax = hist.xedges[0], hist.xedges[-1]
+        xmin,xmax = hist.xedges[0], hist.xedges[-1]
+        ymin,ymax = hist.yedges[0], hist.yedges[-1]
         plt.axis( [xmin, xmax, ymin, ymax] )
         axes = plt.axes()
         axes.set_xlabel( hist.xlabel )
