@@ -1,7 +1,9 @@
 def getDefaults( mode, *axes ) :
     axes_format = "%s"*len(axes)
     format_string = "dict(" + axes_format + "Base.items() +%sBase.items())"
-    return eval( format_string % tuple( list(axes) + [mode] ) )
+    d = eval( format_string % tuple( list(axes) + [mode] ) )
+    d["short_names"] = list(axes)
+    return d
 
 # per value
 ticks = { 
