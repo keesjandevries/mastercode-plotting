@@ -12,14 +12,15 @@ def makeSingleSpacePlot( histos, filename = "~/Documents/mastercode_data/recalc_
     f = r2m.RootFile(filename)
     for hname, options in histos.iteritems() :
         hist = f.get(hname)
+        print dir(hist)
         i += 1
         fig = plt.figure( figsize=[8,6] )
-        xmin,xmax = options["xrange"]
-        ymin,ymax = options["yrange"]
+        xmin,xmax = hist.yedges[0], hist.yedges[-1]
+        ymin,ymax = hist.xedges[0], hist.xedges[-1]
         plt.axis( [xmin, xmax, ymin, ymax] )
         axes = plt.axes()
-        axes.set_xlabel( options["xlabel"] )
-        axes.set_ylabel( options["ylabel"] )
+        axes.set_xlabel( hist.xlabel )
+        axes.set_ylabel( hist.ylabel )
         hist.contour( levels = options["contours"], colors = options["colors"], linewidths = 2 )
         hist.colz()
         plt.axis( [xmin, xmax, ymin, ymax] )
