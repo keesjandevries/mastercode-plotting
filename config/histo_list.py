@@ -8,8 +8,8 @@ def get1DDict() :
 
 
 hists = {
-            "data_histograms/iHist_119_dchi" : pd( "dchi", "neu1" ),
-            "data_histograms/iHist_28_dchi" : pd( "dchi", "mh" )
+            "data_histograms/iHist_mneu1_dchi" : pd( "dchi", "mneu1" ),
+            "data_histograms/iHist_mh_dchi"    : pd( "dchi", "mh" )
         }
 
 spaces = { 
