@@ -12,7 +12,6 @@ def makeSingleSpacePlot( histos, filename = "~/Documents/mastercode_data/recalc_
     f = r2m.RootFile(filename)
     for hname, options in histos.iteritems() :
         hist = f.get(hname)
-        print dir(hist)
         i += 1
         fig = plt.figure( figsize=[8,6] )
         xmin,xmax = hist.yedges[0], hist.yedges[-1]
