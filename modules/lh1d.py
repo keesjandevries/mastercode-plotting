@@ -38,7 +38,7 @@ def makeSingle1DPlot( histos, filename ) :
     f = r2m.RootFile(filename)
     for hname, options in histos.iteritems() :
         hist = f.get(hname)
-        xmin,xmax = options["xrange"]
+        xmin,xmax = hist.xedges[0], hist.xedges[-1]
         ymin,ymax = options["zrange1d"]
         y, x, patch  = hist.hist()
         
@@ -56,8 +56,8 @@ def makeSingle1DPlot( histos, filename ) :
             plt.plot(xnew,ynew,'b')
             plt.axis( [xmin, xmax, ymin, ymax] )
             axes = plt.axes()
-            axes.set_xlabel( options["xlabel"] )
+            axes.set_xlabel( hist.xlabel )
             axes.set_ylabel( options["title"] )
             pylab.xticks(pylab.arange( xmin, xmax+0.1, options["xticks"] ) )
-            axes.set_title( "%s(%s)" % (options["title"], options["xlabel"]) )
+            axes.set_title( "%s(%s)" % (options["title"], hist.xlabel) )
             plt.savefig("spline_%d.png" % i )

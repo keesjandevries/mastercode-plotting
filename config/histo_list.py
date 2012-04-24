@@ -1,4 +1,4 @@
-from defaults.default_plots import getDefaults as dp
+from config.default_plots import getDefaults as dp
 
 def getSpaceDict() :
     return spaces
