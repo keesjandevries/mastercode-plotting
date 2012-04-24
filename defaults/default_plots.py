@@ -1,68 +1,53 @@
-import plotting_defaults as pd
-
 def getDefaults( mode, *axes ) :
     axes_format = "%s"*len(axes)
     format_string = "dict(" + axes_format + "Base.items() +%sBase.items())"
     return eval( format_string % tuple( list(axes) + [mode] ) )
 
-m0m12Base = {
-                "xlabel"   : pd.labels["m0"],
-                "ylabel"   : pd.labels["m12"],
-                "xrange"   : pd.ranges["m0small"],
-                "yrange"   : pd.ranges["m12small"] ,
-                "xticks"   : pd.ticks["m0"],
-                "yticks"   : pd.ticks["m12"],
-            }
+# per value
+m0m12Base   = { "xticks" : ticks["m0"],   "yticks" : ticks["m12"],  }
+m0tanbBase  = { "xticks" : ticks["m0"],   "yticks" : ticks["tanb"], }
+tanbm12Base = { "xticks" : ticks["tanb"], "yticks" : ticks["m12"],  }
+neu1Base    = { "xticks" : ticks["neu1"], } 
+mhBase = { "xticks" : ticks["mh"], } 
 
-m0tanbBase = {
-                "xlabel"   : pd.labels["m0"],
-                "ylabel"   : pd.labels["tanb"],
-                "xrange"   : pd.ranges["m0small"],
-                "yrange"   : pd.ranges["tanb"] ,
-                "xticks"   : pd.ticks["m0"],
-                "yticks"   : pd.ticks["tanb"],
-             }
+ticks = { 
+          "m0"   : 500,
+          "m12"  : 500,
+          "tanb" : 10,
+          "neu1" : 100,
+          "mh"   : 5,
+        }
 
-tanbm12Base = {
-                "xlabel"   : pd.labels["tanb"],
-                "ylabel"   : pd.labels["m12"],
-                "xrange"   : pd.ranges["tanb"],
-                "yrange"   : pd.ranges["m12small"] ,
-                "xticks"   : pd.ticks["tanb"],
-                "yticks"   : pd.ticks["m12"],
-              }
 
-neu1Base = {
-             "xlabel" : pd.labels["neu1"],
-             "xrange" : pd.ranges["neu1"],
-             "xticks" : pd.ticks["neu1"],
-           }
+# per type
 
-mhBase = {
-             "xlabel" : pd.labels["mh"],
-             "xrange" : pd.ranges["mh"],
-             "xticks" : pd.ticks["mh"],
-           }
+colors = [ 'r', 'b' ]
+clevels = { 
+              "dchi" : [2.23,5.99],
+              "pval" : [0.05,0.10],
+          }
 
-# lots of replications : need sto be done more intelligently
-chi2Base = {
-                "title"    : pd.titles["chi2"],
-                "contours" : pd.cLevelDelta(20.),
-                "colors"   : pd.colors,
-                "zrange"   : pd.zrange["chi2"]
+chi2Base = { 
+               "title"    : r"$\chi^{2}$",
+               "contours" : cLevelDelta(20.), 
+               "colors"   : colors, 
+               "zrange"   : [20., 45.]
            }
 
 pvalBase = {
-                "title"    : pd.titles["pval"],
-                "contours" : pd.clevels["pval"],
-                "colors"   : pd.colors,
-                "zrange"   : pd.zrange["pval"]
+                "title"    : r"$P(\chi^{2},N_{DOF})$",
+                "contours" : clevels["pval"],
+                "colors"   : colors,
+                "zrange"   : [0., 0.2],
            }
 
 dchiBase = {
-                "title"    : pd.titles["dchi"],
-                "contours" : pd.clevels["dchi"],
-                "colors"   : pd.colors,
-                "zrange"   : pd.zrange["dchi"],
-                "zrange1d" : pd.zrange["dchi1d"]
+                "title"    : r"$\Delta\chi^{2}$",
+                "contours" : clevels["dchi"],
+                "colors"   : colors,
+                "zrange"   : [0., 25.],
+                "zrange1d" : [0., 9.],
            }
+
+def cLevelDelta( delta = 0.0 ) :
+    return [ x+delta for x in clevels["dchi"] ] 
