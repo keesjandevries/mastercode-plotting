@@ -1,1 +1,0 @@
-More sane way of managing plotting defaults
