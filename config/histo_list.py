@@ -8,7 +8,7 @@ def get1DDict() :
 
 
 hists = {
-            "data_histograms/iHist_mneu1_dchi"    : pd( "dchi", "neu1" ),
+            "data_histograms/iHist_neu1_dchi"     : pd( "dchi", "neu1" ),
             "data_histograms/iHist_m_h^0_dchi"    : pd( "dchi", "m_h^0" )
         }
 
