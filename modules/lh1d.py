@@ -23,7 +23,7 @@ def get_valid_segments( seq, minval, maxval ) :
     lp = 0
     fp = 0
 
-    while fp < (len(seq)-1) :
+    while fp < (len(seq)-1) and lp < (len(seq)-1) :
         fp = find( get_first, seq[lp:] ) + lp
         lp = fp + find( get_last, seq[fp:] )
         
@@ -44,7 +44,7 @@ def makeSingle1DPlot( histos, filename, ext="png" ) :
         ymin,ymax = options["zrange1d"]
         y, x, patch  = hist.hist()
         
-        segs = get_valid_segments( y, options["zrange"][0], options["zrange"][1] )
+        segs = get_valid_segments( y, ymin, ymax )
         for seg in segs :
             i += 1
             y[seg[0]] = options["zrange1d"][1]
@@ -60,6 +60,6 @@ def makeSingle1DPlot( histos, filename, ext="png" ) :
             axes = plt.axes()
             axes.set_xlabel( hist.xlabel )
             axes.set_ylabel( options["title"] )
-            pylab.xticks(pylab.arange( xmin, xmax+0.1, options["xticks"] ) )
+            pylab.xticks(pylab.arange( xmin, xmax*1.001, options["xticks"] ) )
             axes.set_title( "%s(%s)" % (options["title"], hist.xlabel) )
         plt.savefig( fig_name( options, filename ) + ".%s" % ext )
