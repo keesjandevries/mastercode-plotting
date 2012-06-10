@@ -15,28 +15,30 @@ full_plot_size = [8,6]
 sml_plot_size = [4,3]
 
 def make_single_space_overlay( histos, filenames, ext="png" ) :
+    linestyles=['solid','dotted','-.']
     i=0
     fs = [ r2m.RootFile(name) for name in filenames  ]
     for hname, options in histos.iteritems() :
         hists = [f.get(hname) for f in fs ]
         i += 1
         fig = plt.figure( figsize=[8,6] )
-        xmin, = hist.xedges[0], 
-        ymin, = hist.yedges[0], 
-        xmax  = hist.xedges[-1]
-        ymax  = hist.yedges[-1]
+        xmins  =[ hist.xedges[0]  for hist in hists ] 
+        ymins  =[ hist.yedges[0]  for hist in hists ]
+        xmaxs  =[ hist.xedges[-1] for hist in hists ]
+        ymaxs  =[ hist.yedges[-1] for hist in hists ]
+        xmin, xmax, ymin, ymax = min(xmins), max(xmaxs), min(ymins), max(ymaxs)
         plt.axis( [xmin, xmax, ymin, ymax] )
         axes = plt.axes()
-        axes.set_xlabel( hist.xlabel )
-        axes.set_ylabel( hist.ylabel )
-        hist.contour( levels = options["contours"], colors = options["colors"], linewidths = 2 )
-        hist.colz()
-        plt.axis( [xmin, xmax, ymin, ymax] )
-        plt.clim( *options["zrange"] )
-        pylab.yticks(pylab.arange( ymin, ymax+0.1, options["yticks"] ) )
-        pylab.xticks(pylab.arange( xmin, xmax+0.1, options["xticks"] ) )
+        axes.set_xlabel( hists[0].xlabel )
+        axes.set_ylabel( hists[0].ylabel )
+        for hist, lst in zip(hists, linestyles  ):
+            hist.contour( levels = options["contours"], colors = options["colors"], linewidths = 3, linestyles=lst )
+            # FIXME: HERE WE NEED THE GREEN STARS
+       
+        pylab.yticks(pylab.arange( ymin, ymax*1.001, options["yticks"] ) )
+        pylab.xticks(pylab.arange( xmin, xmax*1.001, options["xticks"] ) )
         axes.set_title( options["title"] )
-        plt.savefig( fig_name( options, filename ) + ".%s" % ext )
+        plt.savefig( fig_name( options, filenames[0] ) + ".%s" % ext )
 
 def makeSingleSpacePlot( histos, filename, ext="png" ) :
     i=0
