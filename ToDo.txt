@@ -7,3 +7,16 @@
                     "splines" : [ "iHist...." ]
                 }
             }
+
+
+
+* let the "grid" plot have all the plots: 
+    ~ rows: diffent 1 or 2D spaces
+    ~ collums: chi2 modes, chi2 contributions, lhood contributions, predictions
+    (the reason is that it is easy to produce all at once)
+
+* disentangle all plots from the grid from individual planes and splines
+
+* make mastercode style contour overlays, with best fit point :)
+
+* overlay prediction contours on chi2 plots or visa versa!
