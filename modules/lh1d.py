@@ -35,6 +35,39 @@ def get_valid_segments( seq, minval, maxval ) :
         segs = [ [0,len(seq)] ]
     return segs
 
+def make_single_1d_overlay( histos, filenames, ext="png" ) : #FIXME: ugly, but it does the job poorly
+    i=0
+    linestyles=['solid','dotted','-.']
+    fs = [ r2m.RootFile(name) for name in filenames  ]
+    for hname, options in histos.iteritems() :
+        hists = [f.get(hname) for f in fs ]
+        xmins  =[ hist.xedges[0]  for hist in hists ] 
+        xmaxs  =[ hist.xedges[-1] for hist in hists ]
+        xmin, xmax = min(xmins), max(xmaxs)
+        ymin,ymax = options["zrange1d"]
+        plt.figure()
+        for h,lst in zip( hists, linestyles):
+            y, x, patch  = h.hist()
+            segs = get_valid_segments( y, ymin, ymax ) 
+            for seg in segs :
+                i += 1
+                y[seg[0]] = options["zrange1d"][1]
+                y[seg[1]] = options["zrange1d"][1]
+
+                tck = interpolate.splrep(x[seg[0]:seg[1]],y[seg[0]:seg[1]],s=0)
+                xnew = np.arange(x[seg[0]],x[seg[1]],(x[seg[1]]-x[seg[0]])/200)
+                ynew = interpolate.splev(xnew,tck,der=0)
+                ynew[-1] = options["zrange1d"][1]
+                plt.plot(xnew,ynew,'b',linestyle=lst)
+                plt.axis( [xmin, xmax, ymin, ymax] )
+                axes = plt.axes()
+                axes.set_xlabel( hist.xlabel )
+                axes.set_ylabel( options["title"] )
+                pylab.xticks(pylab.arange( xmin, xmax*1.001, options["xticks"] ) )
+                axes.set_title( "%s(%s)" % (options["title"], hist.xlabel) )
+        plt.savefig( fig_name( options, filenames[0] ) + ".%s" % ext )
+
+
 def makeSingle1DPlot( histos, filename, ext="png" ) :
     i=0
     f = r2m.RootFile(filename)
