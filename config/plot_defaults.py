@@ -8,18 +8,30 @@ def getDefaults( mode, *axes ) :
 
 # per value
 ticks = { 
-          "m0"    : 500,
+          "m0"    :1000,
           "m12"   : 500,
           "tanb"  : 10,
-          "mneu1" : 100,
+          "mneu1" : 500,
+          "ssi"   : 10e-40,
           "mh"    : 5,
+          "MA"    : 500,
+          "mstau1": 500,
+          "mg"    : 500,
+          "msqr"  : 500,
+          "bsmm"  : 2e-9,
         }
 
 m0m12Base   = { "xticks" : ticks["m0"],   "yticks" : ticks["m12"],  }
 m0tanbBase  = { "xticks" : ticks["m0"],   "yticks" : ticks["tanb"], }
 tanbm12Base = { "xticks" : ticks["tanb"], "yticks" : ticks["m12"],  }
-mneu1Base   = { "xticks" : ticks["mneu1"], }
+MAtanbBase  = { "xticks" : ticks["MA"  ], "yticks" : ticks["tanb"], }
+mneu1ssiBase= { "xticks" : ticks["mneu1"],"yticks" : ticks["ssi"],  }
+mstau1Base  = { "xticks" : ticks["mstau1"],}
+mgBase      = { "xticks" : ticks["mg"],    }
+msqrBase    = { "xticks" : ticks["msqr"],  }
+bsmmBase    = { "xticks" : ticks["bsmm"],  }
 mhBase      = { "xticks" : ticks["mh"], }
+mneu1Base   = { "xticks" : ticks["mneu1"], }
 
 # per type
 colors  = [ 'r', 'b' ]
@@ -42,6 +54,6 @@ dchiBase = {
                 "title"    : r"$\Delta\chi^{2}$",
                 "contours" : [2.23, 5.99],
                 "colors"   : colors,
-                "zrange"   : [0., 25.],
+                "zrange"   : [0.,  7.],
                 "zrange1d" : [0., 9.],
            }
