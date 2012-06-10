@@ -57,3 +57,11 @@ dchiBase = {
                 "zrange"   : [0.,  7.],
                 "zrange1d" : [0., 9.],
            }
+
+PbsmmBase = {
+                "title"    : r"Prediction for $BR(B_{s}\rightarrow\mu\mu) $  ",
+                "contours" : [2.23, 5.99],
+                "colors"   : colors,
+                "zrange"   : [0., 6.92e-9  ],
+                "zrange1d" : [0., 9.],
+           }
