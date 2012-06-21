@@ -7,3 +7,16 @@
                     "splines" : [ "iHist...." ]
                 }
             }
+
+Possible colorscheme:
+http://colorbrewer2.org/index.php?type=sequential&scheme=Greens&n=9
+247, 252, 245; [8-inf]
+229, 245, 224;
+199, 233, 192;
+161, 217, 155;
+116, 196, 118;
+65, 171, 93;
+35, 139, 69;
+0, 109, 44;
+0, 68, 27; [0 - 1]
+ 
