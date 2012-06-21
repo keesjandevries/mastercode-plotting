@@ -14,7 +14,7 @@ from plotnames import grid_name
 full_plot_size = [8,6]
 sml_plot_size = [4,3]
 
-def makeSingleSpacePlot( histos, filename, ext="png" ) :
+def individual_space_plots( histos, filename, ext="png", cmap_name='BuGn') :
     i=0
     f = r2m.RootFile(filename)
     for hname, options in histos.iteritems() :
@@ -27,8 +27,13 @@ def makeSingleSpacePlot( histos, filename, ext="png" ) :
         axes = plt.axes()
         axes.set_xlabel( hist.xlabel )
         axes.set_ylabel( hist.ylabel )
-        hist.contour( levels = options["contours"], colors = options["colors"], linewidths = 2 )
-        hist.colz()
+        hist.contour( levels = options["contours"], colors = options["colors"],
+                      linewidths = 2 )
+        cname = cmap_name
+        mode = options['mode']
+        if (model == "chi2" or mode == "dchi") and len(cmap_name) > 0:
+            cname += "_r"
+        hist.colz(cmap=cname)
         plt.axis( [xmin, xmax, ymin, ymax] )
         plt.clim( *options["zrange"] )
         pylab.yticks(pylab.arange( ymin, ymax+0.1, options["yticks"] ) )
@@ -36,7 +41,7 @@ def makeSingleSpacePlot( histos, filename, ext="png" ) :
         axes.set_title( options["title"] )
         plt.savefig( fig_name( options, filename ) + ".%s" % ext )
 
-def makeGridPlots( histos, filename, ext="png" ) :
+def grid_plot( histos, filename, ext="png" ) :
     # old code : doesnt owrk
     nplot = len( histos.keys() )
     sh = sqrt( nplot )

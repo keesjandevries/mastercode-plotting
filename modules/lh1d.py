@@ -17,7 +17,7 @@ def find(f, seq):
 def get_valid_segments( seq, minval, maxval ) :
     get_first = lambda val: val<maxval
     get_last  = lambda val: val>maxval
-    
+
     segs = []
     # find the first segment, then splice the list seq[lp+1:] and run again
     lp = 0
@@ -26,7 +26,7 @@ def get_valid_segments( seq, minval, maxval ) :
     while fp < (len(seq)-1) :
         fp = find( get_first, seq[lp:] ) + lp
         lp = fp + find( get_last, seq[fp:] )
-        
+
         if lp-fp > 2 :
             segs.append( [fp-1,lp] )
 
@@ -35,7 +35,7 @@ def get_valid_segments( seq, minval, maxval ) :
         segs = [ [0,len(seq)] ]
     return segs
 
-def makeSingle1DPlot( histos, filename, ext="png" ) :
+def individual_1d_plot( histos, filename, ext="png" ) :
     i=0
     f = r2m.RootFile(filename)
     for hname, options in histos.iteritems() :
@@ -43,7 +43,7 @@ def makeSingle1DPlot( histos, filename, ext="png" ) :
         xmin,xmax = hist.xedges[0], hist.xedges[-1]
         ymin,ymax = options["zrange1d"]
         y, x, patch  = hist.hist()
-        
+
         segs = get_valid_segments( y, options["zrange"][0], options["zrange"][1] )
         for seg in segs :
             i += 1

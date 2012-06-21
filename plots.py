@@ -9,9 +9,9 @@ def main() :
     spaces = hl.getSpaceDict()
     histos = hl.get1DDict()
     for f in argv[1:] :
-        s.makeSingleSpacePlot(spaces, f, "png")
-        s.makeGridPlots(spaces, f, "png")
-        lh.makeSingle1DPlot(histos, f, "png")
+        s.individual_space_plots(spaces, f, "png")
+        s.grid_plot(spaces, f, "png")
+        lh.individual_1d_plot(histos, f, "png")
 
 if __name__ == "__main__":
     main()
