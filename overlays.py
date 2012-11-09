@@ -10,8 +10,8 @@ def main() :
     histos = hl.get_1d_overlay_dict()
     files =  argv[1:] 
 
-    s.make_single_space_overlay(spaces, files , "png")
-    lh.make_single_1d_overlay(histos, files, "png")
+    s.make_single_space_overlay(spaces, files , "eps")
+    lh.make_single_1d_overlay(histos, files, "eps")
 
 if __name__ == "__main__":
     main()
