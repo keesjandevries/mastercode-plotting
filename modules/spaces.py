@@ -25,43 +25,59 @@ def find_minimum_2d(hist):
     return y_index, x_index
 
 def make_single_space_overlay( histos, filenames, ext="png" ) :
-    #linestyles=['solid','dotted','-.']
+
     linestyles=['dotted','solid','-.']
-    #filling=['g','w','r']
+
     filling=['w','g','r']
+
     fs = [ r2m.RootFile(name) for name in filenames  ]
     for hname, options in histos.iteritems() :
         print hname
         hists = [f.get(hname) for f in fs ]
-        #fig = plt.figure( figsize=[8,6] )
+
+        cs_sels=[] 
+        for hist, lst  in zip(hists, linestyles  ): # FIXME: should first plot the dotted, then the solid contour
+            cs= plt.contour( hist.x, hist.y, hist.content, levels = options["contours"], colors = options["colors"], linewidths = 3, linestyles=lst )
+            cs_sels.append(select_segments(cs.allsegs))
+
         fig = plt.figure( figsize=[10,7.5] )
         plt.rcParams.update({'font.size':12,'axes.labelsize':30,'xtick.labelsize':25, 'ytick.labelsize':25 })
-        xmins  =[ hist.xedges[0]  for hist in hists ] 
-        ymins  =[ hist.yedges[0]  for hist in hists ]
-        xmaxs  =[ hist.xedges[-1] for hist in hists ]
-        ymaxs  =[ hist.yedges[-1] for hist in hists ]
-        xmin, xmax, ymin, ymax = min(xmins), min(xmaxs), min(ymins), max(ymaxs)
         axes = plt.axes()
-        axes.set_xlabel( hists[0].xlabel )
-        axes.set_ylabel( hists[0].ylabel )
-        plt.axis( [xmin, xmax, ymin, ymax] )
-        if options.get("xlog",None) is not None:
-            axes.set_xscale('log')
-        if options.get("ylog",None) is not None:
-            axes.set_yscale('log')
-        for hist, lst, fill in zip(hists, linestyles,filling  ): # FIXME: should first plot the dotted, then the solid contour
-            cs= plt.contour( hist.x, hist.y, hist.content, levels = options["contours"], colors = options["colors"], linewidths = 3, linestyles=lst )
-            y_i, x_i = find_minimum_2d(hist)
-            plt.plot(hist.xedges[x_i], hist.yedges[y_i],marker='*',markeredgecolor='g', color=fill ,ls='', markersize=10)
-       
-        if options.get('yticks',None) is not None: 
-            pylab.yticks(pylab.arange( ymin, ymax*1.001, options["yticks"] ) )
-        if options.get('xticks',None) is not None: 
-            pylab.xticks(pylab.arange( xmin, xmax*1.001, options["xticks"] ) )
+        initialise_axes(axes,hists,options)
+
+        for hist, cs_sel,lst, fill in zip(hists, cs_sels,linestyles,filling  ): # FIXME: should first plot the dotted, then the solid contour
+            plot_segments(axes,cs_sel,colors = options["colors"],linestyle=lst)
+            plot_minimum(hist,fill)
+#            y_i, x_i = find_minimum_2d(hist)
+#            plt.plot(hist.xedges[x_i], hist.yedges[y_i],marker='*',markeredgecolor='g', color=fill ,ls='', markersize=10)
+        plt.legend() 
         plt.gcf().subplots_adjust(bottom=0.15)
         plt.gcf().subplots_adjust(left=0.2)
+        print "Save to ", (fig_name( options, filenames[1] ) + "_overlay.%s" % ext)
         plt.savefig( fig_name( options, filenames[1] ) + "_overlay.%s" % ext )
 
+def initialise_axes(axes,hists,options):
+    # hists is a list with potentially only one element
+#    try: hists[0]
+#    except:TypeError , hists=[hists]
+    xmins  =    [ hist.xedges[0]  for hist in hists ] 
+    ymins  =    [ hist.yedges[0]  for hist in hists ]
+    xmaxs  =    [ hist.xedges[-1] for hist in hists ]
+    ymaxs  =    [ hist.yedges[-1] for hist in hists ]
+    xmin, xmax, ymin, ymax = min(xmins), min(xmaxs), min(ymins), max(ymaxs)
+    axes.set_xlabel( hists[0].xlabel )
+    axes.set_ylabel( hists[0].ylabel )
+    plt.axis( [xmin, xmax, ymin, ymax] )
+    if options.get("xlog",None) is not None:
+        axes.set_xscale('log')
+    if options.get("ylog",None) is not None:
+        axes.set_yscale('log')
+    if options.get('yticks',None) is not None: 
+        pylab.yticks(pylab.arange( ymin, ymax*1.001, options["yticks"] ) )
+    if options.get('xticks',None) is not None: 
+        pylab.xticks(pylab.arange( xmin, xmax*1.001, options["xticks"] ) )
+
+#def get_axis(hists):
 def makeSingleSpacePlot( histos, filename, ext="png" ) :
     f = r2m.RootFile(filename)
     for hname, options in histos.iteritems() :
@@ -102,11 +118,11 @@ def makeSingleSpacePlot( histos, filename, ext="png" ) :
         plt.savefig( fig_name( options, filename ) + ".%s" % ext )
 
 
-def plot_segments(axes,cs,colors):
+def plot_segments(axes,cs,colors,linestyle='solid'):
     from matplotlib.path import Path
     import matplotlib.patches as patches
     for i, level in enumerate(cs):
-        for cont in level:
+        for j,cont in enumerate(level):
             verts=[]
             codes=[Path.MOVETO]
             for coor in cont:
@@ -114,9 +130,15 @@ def plot_segments(axes,cs,colors):
             for vert in verts[1:]:
                 codes.append(Path.LINETO)
             path = Path(verts, codes)
-            patch = patches.PathPatch(path,edgecolor=colors[i], facecolor='none', lw=2)
+            if j ==0 :
+                patch = patches.PathPatch(path,edgecolor=colors[i], facecolor='none', lw=2,linestyle=linestyle,label=["chi2=5.99","chi2=2.30"][i])
+            else:
+                patch = patches.PathPatch(path,edgecolor=colors[i], facecolor='none', lw=2,linestyle=linestyle)
             axes.add_patch(patch)
-    
+
+def plot_minimum(hist,fill):
+    y_i, x_i = find_minimum_2d(hist)
+    plt.plot(hist.xedges[x_i], hist.yedges[y_i],marker='*',markeredgecolor='g', color=fill ,ls='', markersize=10)
     
 
 def make_colour_contour_overlay(colour,contour,filename, ext="png"):
