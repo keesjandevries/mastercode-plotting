@@ -157,6 +157,7 @@ def make_raw_smooth_overlays( r_s_histos, filename, ext="png" ) : #FIXME: ugly, 
             plt.plot(rxs,rys,'b',linestyle=lst,linewidth=1)
         plt.gcf().subplots_adjust(bottom=0.15)
         plt.gcf().subplots_adjust(left=0.12)
+        print "Saved to: ",(fig_name( r_options, filename ) + "_raw_smooth.%s" % ext)
         plt.savefig( fig_name( r_options, filename ) + "_raw_smooth.%s" % ext )
 
 
