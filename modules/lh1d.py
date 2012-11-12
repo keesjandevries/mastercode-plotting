@@ -101,7 +101,8 @@ def make_single_1d_overlay( histos, filenames, ext="png" ) : #FIXME: ugly, but i
     fs = [ r2m.RootFile(name) for name in filenames  ]
     for hname, options in histos.iteritems() :
         fig = plt.figure( figsize=[10,7.5] )
-        plt.rcParams.update({'font.size':25,'axes.labelsize':30 })
+#        plt.rcParams.update({'font.size':25,'axes.labelsize':30 })
+        plt.rcParams.update({'font.size':12,'axes.labelsize':30,'xtick.labelsize':25, 'ytick.labelsize':25 })
         hists = [f.get(hname) for f in fs ]
         xmins  =[ hist.xedges[0]  for hist in hists ] 
         xmaxs  =[ hist.xedges[-1] for hist in hists ]
@@ -121,10 +122,12 @@ def make_single_1d_overlay( histos, filenames, ext="png" ) : #FIXME: ugly, but i
         axes.set_ylabel( options["title"] )
 #        axes.set_title( "%s(%s)" % (options["title"], hist.xlabel) )
         pylab.xticks(pylab.arange( xmin, xmax*1.001, options["xticks"] ) )
-        for rsp,lst in zip(r_splines,linestyles):
+        from config.file_dict import file_dict
+        for rsp,lst,name in zip(r_splines,linestyles,filenames):
             (rxs,rys)  = rsp 
-            plt.plot(rxs,rys,'b',linestyle=lst,linewidth=3)
+            plt.plot(rxs,rys,'b',linestyle=lst,linewidth=3,label=file_dict.get(name))
         #plt.savefig( fig_name( options, filenames[0] ) + "_raw.%s" % ext )
+        plt.legend()
         plt.gcf().subplots_adjust(bottom=0.15)
         plt.gcf().subplots_adjust(left=0.12)
         plt.savefig( fig_name( options, filenames[1] ) + "_overlay.%s" % ext )

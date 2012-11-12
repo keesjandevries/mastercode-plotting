@@ -69,8 +69,9 @@ pvalBase = {
 dchiBase = {
                 "title"    : r"$\Delta\chi^{2}$",
 #                "title"    : r"",
-                "contours" : [ 2.30,5.99],
-                "colors"   : colors,
+                "contours" : [ 5.99,2.30],
+                "colors"   : ['b','r'],
+                "labels"   : [r"$\Delta\chi^{2}=2.30$ ", r"$\Delta\chi^{2}=5.99$ "] ,
                 "zrange"   : [0., 20.0],
                 "zrange1d" : [0., 9.],
            }

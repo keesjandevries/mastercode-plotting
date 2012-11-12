@@ -220,7 +220,7 @@ hists = {
 #            "smooth_histograms/iHist_Dm_nslp_lsp_dchi"      : pd( "dchi", "Dm_nslp_lsp" ),
 #            "data_histograms/iHist_m_h^0_dchi"      : pd( "dchi", "mh" ),
 #            "data_histograms/iHist_stau_1_dchi"     : pd("dchi","mstau1"),
-#            "data_histograms/iHist_gluino_dchi"     : pd("dchi", "mg"   ),
+            "data_histograms/iHist_gluino_dchi"     : pd("dchi", "mg"   ),
 #            "data_histograms/iHist_squark_r_dchi"  : pd("dchi", "msqr" ),
             "data_histograms/iHist_BsmumuRatio_dchi"     : pd("dchi", "bsmmratio" ),
 ##            "data_histograms/iHist_RatioBsmumu_dchi"     : pd("dchi", "bsmm" ),
@@ -228,7 +228,7 @@ hists = {
         }
 
 spaces = { 
-            "data_histograms/iHist_m0_m12_dchi"     : pd("dchi", "m0",  "m12" ),
+#            "data_histograms/iHist_m0_m12_dchi"     : pd("dchi", "m0",  "m12" ),
 #            "data_histograms/iHist_m0_m12_pred_tanb"        :  pd("Ptanb", "m0"  ,"m12") , 
 #            "data_histograms/iHist_m0_m12_pred_A0"          :  pd("PA0", "m0"  ,"m12") , 
 #            "data_histograms/iHist_m0_m12_pred_m_h^0"       :  pd("Pm_h0", "m0" ,"m12" ),
@@ -293,16 +293,16 @@ raw_smooth=[
 #             ["smooth_histograms/iHist_stop1_dchi"     ,  pd("dchi","stop1")] ),
 #            (["data_histograms/iHist_gluino_dchi"       ,  pd("dchi","mg")],
 #             ["smooth_histograms/iHist_gluino_dchi"     ,  pd("dchi","mg")] ),
-#            (["data_histograms/iHist_BsmumuRatio_dchi"  ,  pd("dchi", "bsmmratio" )],
-#             ["smooth_histograms/iHist_BsmumuRatio_dchi",  pd("dchi", "bsmmratio" )] ),
+            (["data_histograms/iHist_BsmumuRatio_dchi"  ,  pd("dchi", "bsmmratio" )],
+             ["smooth_histograms/iHist_BsmumuRatio_dchi",  pd("dchi", "bsmmratio" )] ),
 #           (["data_histograms/iHist_squark_r_dchi"       ,  pd("dchi","msqr")],
 #            ["smooth_histograms/iHist_squark_r_dchi"     ,  pd("dchi","msqr")] ),
 #            (["data_histograms/iHist_m_h^0_dchi"       ,  pd("dchi_red_band","mh")],
 #             ["smooth_histograms/iHist_m_h^0_dchi"     ,  pd("dchi_red_band","mh")] ),
 #            (["data_histograms/iHist_Dm_stau1_neu1_dchi" ,      pd( "dchi", "Dm_stau1_neu1" )],
 #             ["smooth_histograms/iHist_Dm_stau1_neu1_dchi" ,      pd( "dchi", "Dm_stau1_neu1" )])
-            (["data_histograms/iHist_Dm_nslp_lsp_dchi" ,      pd( "dchi", "Dm_nslp_lsp" )],
-             ["smooth_histograms/iHist_Dm_nslp_lsp_dchi" ,      pd( "dchi", "Dm_nslp_lsp" )])
+#            (["data_histograms/iHist_Dm_nslp_lsp_dchi" ,      pd( "dchi", "Dm_nslp_lsp" )],
+#             ["smooth_histograms/iHist_Dm_nslp_lsp_dchi" ,      pd( "dchi", "Dm_nslp_lsp" )])
                
                 ]
 
@@ -322,12 +322,12 @@ dlh_overlay = {
 #            "data_histograms/iHist_gluino_dchi"     : pd("dchi", "mg"   ),
 #            "data_histograms/iHist_squark_r_dchi"  : pd("dchi", "msqr" ),
 #            "data_histograms/iHist_stop1_dchi"  : pd("dchi", "stop1" ),
-#            "smooth_histograms/iHist_BsmumuRatio_dchi"     : pd("dchi", "bsmmratio" ),
+            "smooth_histograms/iHist_BsmumuRatio_dchi"     : pd("dchi", "bsmmratio" ),
 #            "smooth_histograms/iHist_stau_1_dchi"     : pd("dchi","mstau1"),
-#            "smooth_histograms/iHist_gluino_dchi"     : pd("dchi", "mg"   ),
+            "smooth_histograms/iHist_gluino_dchi"     : pd("dchi", "mg"   ),
 #            "smooth_histograms/iHist_squark_r_dchi"  : pd("dchi", "msqr" ),
 #            "smooth_histograms/iHist_stop1_dchi"  : pd("dchi", "stop1" ),
-              "data_histograms/iHist_BsmumuRatio_dchi"     : pd("dchi", "bsmmratio" ),
+#              "data_histograms/iHist_BsmumuRatio_dchi"     : pd("dchi", "bsmmratio" ),
 ###                "data_histograms/iHist_neu1_dchi"     : pd("dchi", "mneu1" ),
                }
 
