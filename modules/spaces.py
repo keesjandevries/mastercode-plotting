@@ -153,6 +153,8 @@ def make_colour_contour_overlay(colour,contour,filename, ext="png"):
         hist1 = f.get(hname1)
         hist2 = f.get(hname2)
         #fig = plt.figure( figsize=[8,6] )
+        cs=plt.contour( hist2.x, hist2.y, hist2.content, levels = options2["contours"], colors = options2["colors"], linewidths = 2 )
+        cs_sel=select_segments(cs.allsegs,hist2,options2)
         fig = plt.figure( figsize=[10,7.5] )
         plt.rcParams.update({'font.size':25,'axes.labelsize':30,'xtick.labelsize':25, 'ytick.labelsize':25 })
 #        plt.rcParams.update({'font.size':18})
@@ -167,8 +169,6 @@ def make_colour_contour_overlay(colour,contour,filename, ext="png"):
         if options1.get("ylog",None) is not None:
             axes.set_yscale('log')
 #        hist2.contour( levels = options2["contours"], colors = options2["colors"], linewidths = 2 )
-        cs=plt.contour( hist2.x, hist2.y, hist2.content, levels = options2["contours"], colors = options2["colors"], linewidths = 2 )
-        cs_sel=select_segments(cs.allsegs,hist2,options2)
         hist1.colz()
         plt.axis( [xmin, xmax, ymin, ymax] )
         plt.clim( *options1["zrange"] )
