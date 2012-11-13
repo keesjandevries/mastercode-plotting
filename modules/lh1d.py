@@ -96,12 +96,10 @@ def get_spline_from_hist(hist,options,smooth=1):
     return x_final, y_final
 
 def make_single_1d_overlay( histos, filenames, ext="png" ) : #FIXME: ugly, but it does the job poorly
-#    linestyles=['solid','dotted','-.']
     linestyles=['dotted','solid','-.']
     fs = [ r2m.RootFile(name) for name in filenames  ]
     for hname, options in histos.iteritems() :
         fig = plt.figure( figsize=[10,7.5] )
-#        plt.rcParams.update({'font.size':25,'axes.labelsize':30 })
         plt.rcParams.update({'font.size':12,'axes.labelsize':30,'xtick.labelsize':25, 'ytick.labelsize':25 })
         hists = [f.get(hname) for f in fs ]
         xmins  =[ hist.xedges[0]  for hist in hists ] 
@@ -114,22 +112,22 @@ def make_single_1d_overlay( histos, filenames, ext="png" ) : #FIXME: ugly, but i
         for  hist in  hists  :
             r_splines.append( get_raw_spline_from_hist(hist,options))
 
-#        plt.figure()
         fig = plt.figure( figsize=[10,7.5] )
         plt.axis( [xmin, xmax, ymin, ymax] )
         axes = plt.axes()
         axes.set_xlabel( hist.xlabel )
         axes.set_ylabel( options["title"] )
-#        axes.set_title( "%s(%s)" % (options["title"], hist.xlabel) )
         pylab.xticks(pylab.arange( xmin, xmax*1.001, options["xticks"] ) )
         from config.file_dict import file_dict
         for rsp,lst,name in zip(r_splines,linestyles,filenames):
             (rxs,rys)  = rsp 
             plt.plot(rxs,rys,'b',linestyle=lst,linewidth=3,label=file_dict.get(name))
-        #plt.savefig( fig_name( options, filenames[0] ) + "_raw.%s" % ext )
+
         plt.legend()
         plt.gcf().subplots_adjust(bottom=0.15)
         plt.gcf().subplots_adjust(left=0.12)
+
+        print "Save to: ", fig_name( options, filenames[1] ) + "_overlay.%s" % ext 
         plt.savefig( fig_name( options, filenames[1] ) + "_overlay.%s" % ext )
 
 def make_raw_smooth_overlays( r_s_histos, filename, ext="png" ) : #FIXME: ugly, but it does the job poorly
