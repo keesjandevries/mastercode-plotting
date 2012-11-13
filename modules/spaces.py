@@ -57,6 +57,30 @@ def make_single_space_overlay( histos, filenames, ext="png" ) :
         print "Save to ", (fig_name( options, filenames[1] ) + "_overlay.%s" % ext)
         plt.savefig( fig_name( options, filenames[1] ) + "_overlay.%s" % ext )
 
+def initialise_axes_new(hists,options):
+    fig = plt.figure( figsize=[10,7.5] )
+    plt.rcParams.update({'font.size':20,'axes.labelsize':30,'xtick.labelsize':25, 'ytick.labelsize':25 })
+    axes = plt.axes()
+    xmins  =    [ hist.xedges[0]  for hist in hists ] 
+    ymins  =    [ hist.yedges[0]  for hist in hists ]
+    xmaxs  =    [ hist.xedges[-1] for hist in hists ]
+    ymaxs  =    [ hist.yedges[-1] for hist in hists ]
+    xmin, xmax, ymin, ymax = min(xmins), min(xmaxs), min(ymins), max(ymaxs)
+    axes.set_xlabel( hists[0].xlabel )
+    axes.set_ylabel( hists[0].ylabel )
+    plt.axis( [xmin, xmax, ymin, ymax] )
+    if options.get("xlog",None) is not None:
+        axes.set_xscale('log')
+    if options.get("ylog",None) is not None:
+        axes.set_yscale('log')
+    if options.get('yticks',None) is not None: 
+        pylab.yticks(pylab.arange( ymin, ymax*1.001, options["yticks"] ) )
+    if options.get('xticks',None) is not None: 
+        pylab.xticks(pylab.arange( xmin, xmax*1.001, options["xticks"] ) )
+    if options.get('title') is not None:    
+        axes.set_title( options["title"] )
+    return fig, axes
+
 def initialise_axes(axes,hists,options):
     # hists is a list with potentially only one element
 #    try: hists[0]
@@ -152,37 +176,21 @@ def make_colour_contour_overlay(colour,contour,filename, ext="png"):
         options1, options2=col[1] , cont[1]
         hist1 = f.get(hname1)
         hist2 = f.get(hname2)
-        #fig = plt.figure( figsize=[8,6] )
+        # get contours before initialising figure
         cs=plt.contour( hist2.x, hist2.y, hist2.content, levels = options2["contours"], colors = options2["colors"], linewidths = 2 )
         cs_sel=select_segments(cs.allsegs,hist2,options2)
-        fig = plt.figure( figsize=[10,7.5] )
-        plt.rcParams.update({'font.size':25,'axes.labelsize':30,'xtick.labelsize':25, 'ytick.labelsize':25 })
-#        plt.rcParams.update({'font.size':18})
-        xmin,xmax = hist1.xedges[0], hist1.xedges[-1]
-        ymin,ymax = hist1.yedges[0], hist1.yedges[-1]
-        plt.axis( [xmin, xmax, ymin, ymax] )
-        axes = plt.axes()
-        axes.set_xlabel( hist1.xlabel )
-        axes.set_ylabel( hist1.ylabel )
-        if options1.get("xlog",None) is not None:
-            axes.set_xscale('log')
-        if options1.get("ylog",None) is not None:
-            axes.set_yscale('log')
-#        hist2.contour( levels = options2["contours"], colors = options2["colors"], linewidths = 2 )
+        fig, axes = initialise_axes_new([hist1,hist2],options1)
+        # plot colors
         hist1.colz()
-        plt.axis( [xmin, xmax, ymin, ymax] )
         plt.clim( *options1["zrange"] )
-        if options1.get('xticks',None) is not None: 
-            pylab.xticks(pylab.arange( xmin, xmax*1.001, options1["xticks"] ) )
-        if options1.get('yticks',None) is not None: 
-            pylab.yticks(pylab.arange( ymin, ymax*1.001, options1["yticks"] ) )
-#        pylab.yticks(pylab.arange( ymin, ymax+0.1  , options1["yticks"] ) )
-#        pylab.xticks(pylab.arange( xmin, xmax+0.1, options1["xticks"] ) )
-        axes.set_title( options1["title"] )
+        # plot contours
         plot_segments(axes,cs_sel,options= options2)
+        # adjust figure so that it looks nice
         plt.gcf().subplots_adjust(bottom=0.15)
         plt.gcf().subplots_adjust(left=0.2)
         plt.gcf().subplots_adjust(right=0.74)
+        #save
+        print "Save to: ", fig_name( options1, filename ) + "_col_"+options2["mode"] + "_con.%s" % ext
         plt.savefig( fig_name( options1, filename ) + "_col_"+options2["mode"] + "_con.%s" % ext )
 
 
