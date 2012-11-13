@@ -135,7 +135,6 @@ def make_raw_smooth_overlays( r_s_histos, filename, ext="png" ) : #FIXME: ugly, 
     linestyles=['dotted','solid','-.']
     for r_histo, s_histo in r_s_histos :
         r_hname,r_options=r_histo
-        print r_hname
         s_hname,s_options=s_histo
         fig = plt.figure( figsize=[10,7.5] )
         plt.rcParams.update({'font.size':25,'axes.labelsize':30 })
@@ -158,6 +157,7 @@ def make_raw_smooth_overlays( r_s_histos, filename, ext="png" ) : #FIXME: ugly, 
             plt.plot(rxs,rys,'b',linestyle=lst,linewidth=1)
         plt.gcf().subplots_adjust(bottom=0.15)
         plt.gcf().subplots_adjust(left=0.12)
+
         print "Saved to: ",(fig_name( r_options, filename ) + "_raw_smooth.%s" % ext)
         plt.savefig( fig_name( r_options, filename ) + "_raw_smooth.%s" % ext )
 
