@@ -1,5 +1,5 @@
 #! /usr/bin/env python
-from config import histo_list as hl
+from config import red_band_list as hl
 from modules import spaces as s
 from modules import lh1d as lh
 

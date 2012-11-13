@@ -162,7 +162,7 @@ def make_raw_smooth_overlays( r_s_histos, filename, ext="png" ) : #FIXME: ugly, 
         plt.savefig( fig_name( r_options, filename ) + "_raw_smooth.%s" % ext )
 
 
-def makeSingle1DPlot( histos, filename, ext="png" ) :
+def make_single_1d_plot( histos, filename, ext="png" ) :
     f = r2m.RootFile(filename)
     for hname, options in histos.iteritems() :
         hist = f.get(hname)
@@ -177,6 +177,8 @@ def makeSingle1DPlot( histos, filename, ext="png" ) :
             plt.axvspan(xmin= x_min,xmax=x_max,color="#30c048",zorder=1)
         plt.gcf().subplots_adjust(bottom=0.15)
         plt.gcf().subplots_adjust(left=0.12)
+
+        print "Save to: " , fig_name( options, filename ) + ".%s" % ext
         plt.savefig( fig_name( options, filename ) + ".%s" % ext )
 
 def make_red_band_plot_raw( histos, filename, ext="png"):
@@ -192,7 +194,7 @@ def make_red_band_plot_raw( histos, filename, ext="png"):
             plt.axvspan(xmin= hist.xedges[0],xmax=114.4,color="#FFFF00",zorder=0)
             plt.axvspan(xmin= 124,xmax=126,color="#00FF00",zorder=1)
             x_pos_lhc_label=0.75
-            print x_pos_lhc_label
+#            print x_pos_lhc_label
             plt.figtext(x=0.15,y=0.2, s="LEP \nexcluded",zorder=2 )
             plt.figtext(x=x_pos_lhc_label,y=0.2, s="LHC ",zorder=2 )
         x_in, x_out = get_x_in_out_curve(xs,ysl)
@@ -201,6 +203,8 @@ def make_red_band_plot_raw( histos, filename, ext="png"):
         plt.plot(xs,ys,'b',linestyle='solid',linewidth=3,zorder=5)
         plt.gcf().subplots_adjust(bottom=0.15)
         plt.gcf().subplots_adjust(left=0.12)
+
+        print "Save to: ", fig_name( options, filename ) + "_raw.%s" % ext 
         plt.savefig( fig_name( options, filename ) + "_raw.%s" % ext )
 
 def make_red_band_plot_smooth( histos, filename, ext="png"):
@@ -218,6 +222,7 @@ def make_red_band_plot_smooth( histos, filename, ext="png"):
             plt.fill_betweenx(ys,xs, x_in,facecolor="red",edgecolor='red')
             plt.plot(xs,ys,'b',linestyle='solid',linewidth=3)
 
+        print "Save to: ", fig_name( options, filename ) + "_smooth.%s" % ext 
         plt.savefig( fig_name( options, filename ) + "_smooth.%s" % ext )
 
 def get_x_in_out_curve(xs,ys):
