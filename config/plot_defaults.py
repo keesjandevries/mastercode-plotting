@@ -74,6 +74,7 @@ dchiBase = {
                 "labels"   : [r"$\Delta\chi^{2}=2.30$ ", r"$\Delta\chi^{2}=5.99$ "] ,
                 "zrange"   : [0., 20.0],
                 "zrange1d" : [0., 9.],
+                "de_island": True,
            }
 
 dchi_red_bandBase = {

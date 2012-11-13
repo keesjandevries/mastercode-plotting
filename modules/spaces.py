@@ -34,32 +34,32 @@ def make_single_space_overlay( histos, filenames, ext="png" ) :
 
     fs = [ r2m.RootFile(name) for name in filenames  ]
     for hname, options in histos.iteritems() :
-        print hname
-        hists = [f.get(hname) for f in fs ]
 
+        hists = [f.get(hname) for f in fs ]
         cs_sels=[] 
-        for hist, lst  in zip(hists, linestyles  ): # FIXME: should first plot the dotted, then the solid contour
+
+        for hist, lst  in zip(hists, linestyles  ): 
             cs= plt.contour( hist.x, hist.y, hist.content, levels = options["contours"], colors = options["colors"], linewidths = 3, linestyles=lst )
             cs_sels.append(select_segments(cs.allsegs,hist,options))
 
-        fig = plt.figure( figsize=[10,7.5] )
-        plt.rcParams.update({'font.size':12,'axes.labelsize':30,'xtick.labelsize':25, 'ytick.labelsize':25 })
-        axes = plt.axes()
-        initialise_axes(axes,hists,options)
+        fig, axes = initialise_axes_new(hists,options)
 
         for hist, cs_sel,lst, fill,name in zip(hists, cs_sels,linestyles,filling ,filenames ): 
             plot_segments(axes,cs_sel,options = options,linestyle=lst,filename=name)
             plot_minimum(hist,fill)
 
         plt.legend() 
+
         plt.gcf().subplots_adjust(bottom=0.15)
         plt.gcf().subplots_adjust(left=0.2)
-        print "Save to ", (fig_name( options, filenames[1] ) + "_overlay.%s" % ext)
+
+        print "Save to: ", (fig_name( options, filenames[1] ) + "_overlay.%s" % ext)
         plt.savefig( fig_name( options, filenames[1] ) + "_overlay.%s" % ext )
 
 def initialise_axes_new(hists,options):
     fig = plt.figure( figsize=[10,7.5] )
-    plt.rcParams.update({'font.size':20,'axes.labelsize':30,'xtick.labelsize':25, 'ytick.labelsize':25 })
+    # FIXME: this is now assuming a fixed setup for all plot, but this could become plot type dependent.
+    plt.rcParams.update({'axes.titlesize':20,'legend.fontsize':14,'axes.labelsize':30,'xtick.labelsize':25, 'ytick.labelsize':25 })
     axes = plt.axes()
     xmins  =    [ hist.xedges[0]  for hist in hists ] 
     ymins  =    [ hist.yedges[0]  for hist in hists ]
@@ -77,8 +77,6 @@ def initialise_axes_new(hists,options):
         pylab.yticks(pylab.arange( ymin, ymax*1.001, options["yticks"] ) )
     if options.get('xticks',None) is not None: 
         pylab.xticks(pylab.arange( xmin, xmax*1.001, options["xticks"] ) )
-    if options.get('title') is not None:    
-        axes.set_title( options["title"] )
     return fig, axes
 
 def initialise_axes(axes,hists,options):
@@ -105,7 +103,7 @@ def initialise_axes(axes,hists,options):
         axes.set_title( options["title"] )
 
 #def get_axis(hists):
-def makeSingleSpacePlot( histos, filename, ext="png" ) :
+def make_single_space_plot( histos, filename, ext="png" ) :
     f = r2m.RootFile(filename)
     for hname, options in histos.iteritems() :
         hist = f.get(hname)
@@ -117,6 +115,9 @@ def makeSingleSpacePlot( histos, filename, ext="png" ) :
         plt.rcParams.update({'font.size':18})
         axes = plt.axes()
         initialise_axes(axes,[hist],options)
+        # title is not standard
+        if options.get('title') is not None:    
+            axes.set_title( options["title"] )
 
         if 'green_band' in options.keys():
             x_min, x_max, axis  = options['green_band']
@@ -183,6 +184,9 @@ def make_colour_contour_overlay(colour,contour,filename, ext="png"):
         # plot colors
         hist1.colz()
         plt.clim( *options1["zrange"] )
+        # coloured plots should get a title
+        if options1.get('title') :    
+            axes.set_title( options1["title"] )
         # plot contours
         plot_segments(axes,cs_sel,options= options2)
         # adjust figure so that it looks nice
@@ -199,8 +203,11 @@ def select_segments(segs,hist,options):
     for level,level_z in zip(segs, options['contours']):
        sel_lev=[]
        for contour in level:
-            if (len(contour)>5 and not contour_is_open(contour) and check_higher_values_exterior(contour,hist,level_z)) \
-                or contour_is_open(contour) :
+            if options.get("de_island") and \
+                (  (len(contour)>5 and not contour_is_open(contour) and check_higher_values_exterior(contour,hist,level_z)) \
+                or contour_is_open(contour)  ) :
+                sel_lev.append(contour)
+            elif not options.get("de_island") :
                 sel_lev.append(contour)
        sel_cs.append(sel_lev)
     return sel_cs
