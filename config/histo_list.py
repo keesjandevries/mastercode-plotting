@@ -225,6 +225,8 @@ hists = {
             "data_histograms/iHist_BsmumuRatio_dchi"     : pd("dchi", "bsmmratio" ),
 ##            "data_histograms/iHist_RatioBsmumu_dchi"     : pd("dchi", "bsmm" ),
 #           "data_histograms/iHist_stop1_dchi"  : pd("dchi", "stop1" ),
+            "data_histograms/iHist_neu1_dchi"     : pd( "dchi", "neu1" ),
+            "data_histograms/iHist_m_h^0_dchi"    : pd( "dchi", "m_h^0" )
         }
 
 spaces = { 

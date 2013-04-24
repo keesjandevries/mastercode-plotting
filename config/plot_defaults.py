@@ -1,7 +1,7 @@
 def getDefaults( mode, *axes ) :
-    axes_format = "%s"*len(axes)
-    format_string = "dict(" + axes_format + "Base.items() +%sBase.items())"
-    d = eval( format_string % tuple( list(axes) + [mode] ) )
+    d = {}
+    d.update(spaceBases[ "".join(axes) ])
+    d.update( typeBases[mode] )
     d["short_names"] = list(axes)
     d["mode"] = mode
     return d
@@ -51,6 +51,14 @@ Dm_stau1_neu1Base   = { "xticks" : ticks["Dm_stau1_neu1"], "green_band":[0,1.777
 Dm_nslp_lspBase   = { "xticks" : ticks["Dm_nslp_lsp"], "green_band":[0,1.777] }
 
 
+spaceBases = {
+    "m0m12"   : { "xticks" : ticks["m0"],   "yticks" : ticks["m12"],  },
+    "m0tanb"  : { "xticks" : ticks["m0"],   "yticks" : ticks["tanb"], },
+    "tanbm12" : { "xticks" : ticks["tanb"], "yticks" : ticks["m12"],  },
+    "neu1"    : { "xticks" : ticks["neu1"], },
+    "m_h^0"   : { "xticks" : ticks["m_h^0"], },
+}
+
 # per type
 colors  = [ 'r', 'b' ]
 
@@ -61,13 +69,6 @@ chi2Base = {
                "zrange"   : [20., 45. ],
                "zrange1d" : [20, 45.],
                'colz'     : True,
-           }
-
-pvalBase = {
-                "title"    : r"$P(\chi^{2},N_{DOF})$",
-                "contours" : [0.05, 0.1],
-                "colors"   : colors,
-                "zrange"   : [0., 0.2],
            }
 
 dchiBase = {
@@ -341,3 +342,13 @@ PRDmsRDmdBase={
                 "zrange"   : [0.7392,1.2608 ],   
                 "zrange1d" : [115.,130.    ],
            }
+=======
+    "dchi" : {
+        "title"    : r"$\Delta\chi^{2}$",
+        "contours" : [2.23, 5.99],
+        "colors"   : colors,
+        "zrange"   : [0., 25.],
+        "zrange1d" : [0., 9.],
+    },
+}
+>>>>>>> master:config/plot_defaults.py
