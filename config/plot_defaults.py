@@ -12,13 +12,15 @@ ticks = {
           "A0"    :1000,
           "m12"   : 500,
           "tanb"  : 10,
+          "mhd2"  : 2e6,
+          "mhu2"  : 2e6,
           "mneu1" : 100,
           "Dm_stau1_neu1" : 5,
           "Dm_nslp_lsp" :10,
           "ssi"   : 10e-12,
-          "mh"    : 5,
+          "mh"    : 10,
           "MA"    : 1000,
-          "mstau1": 200,
+          "mstau1":1000,
           "mg"    : 1000,
           "msqr"  : 1000,
           "stop1"  : 1000,
@@ -27,6 +29,7 @@ ticks = {
         }
 
 m0m12Base   = { "xticks" : ticks["m0"],   "yticks" : ticks["m12"],  }
+mhd2mhu2Base   = { "xticks" : ticks["mhd2"],   "yticks" : ticks["mhu2"],  }
 A0tanbBase   = { "xticks" : ticks["A0"],   "yticks" : ticks["tanb"],  }
 Dm_stau1_neu1mhBase   = { "xticks" : ticks["Dm_stau1_neu1"],   "yticks" : ticks["mh"],  }
 mstau1Dm_stau1_neu1Base  = {  "xticks" : ticks["mstau1"],"yticks" : ticks["Dm_stau1_neu1"] , "green_band":[0,1.777,'y']  }
@@ -55,8 +58,9 @@ chi2Base = {
                "title"    : r"$\chi^{2}$",
                "contours" : [0.   , 0.   ], # need more sensible values
                "colors"   : colors, 
-               "zrange"   : [20, 45.],
+               "zrange"   : [20., 45. ],
                "zrange1d" : [20, 45.],
+               'colz'     : True,
            }
 
 pvalBase = {
@@ -67,22 +71,33 @@ pvalBase = {
            }
 
 dchiBase = {
-                "title"    : r"$\Delta\chi^{2}$",
+#                "title"    : r"$\Delta\chi^{2}$",
 #                "title"    : r"",
+                "ytitle"   : r"$\Delta\chi^{2}$",
                 "contours" : [ 5.99,2.30],
+#                "contours" : [ -1., -1.],
                 "colors"   : ['b','r'],
-                "labels"   : [r"$\Delta\chi^{2}=2.30$ ", r"$\Delta\chi^{2}=5.99$ "] ,
-                "zrange"   : [0., 20.0],
+                "labels"   : [r"$\Delta\chi^{2}=5.99$ ", r"$\Delta\chi^{2}=2.30$ "] ,
+                "zrange"   : [0.,   9.0],
                 "zrange1d" : [0., 9.],
                 "de_island": True,
+#                'pickle'   : True,
+#                "minlength": 25 ,
+#                'legend'   : True,
+                'lgd_position'  :  2,
+#                'offset'    : 1.838454,
+#                'offset'    : 2.814454,
+                'colz'     : True,
+#                'cmap'     : 'winter',
            }
 
 dchi_red_bandBase = {
-                "title"    : r"$\Delta\chi^{2}$",
+                "ytitle"    : r"$\Delta\chi^{2}$",
                 "contours" : [2.30, 5.99],
                 "colors"   : colors,
                 "zrange"   : [0.,  7.],
                 "zrange1d" : [0., 4.],
+                "yticks": 1.0,
            }
 
 PbsmmBase = {

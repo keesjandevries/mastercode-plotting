@@ -1,18 +1,37 @@
 import matplotlib
-import matplotlib.pyplot as plt
 import pylab
 import ROOT
-import rootplot.root2matplotlib as r2m
 
 import numpy as np
+
+import matplotlib.pyplot as plt
+from matplotlib.patches import Polygon
+from matplotlib.collections import PatchCollection
+
+import rootplot.root2matplotlib as r2m
+
 from scipy import interpolate
+from scipy.interpolate import spline
 
 from plotnames import fig_name
+from config.file_dict import file_dict
 
 def find(f, seq):
     for i,item in enumerate(seq):
         if f(item) or i == (len(seq)-1) :
             return i
+
+def get_xy_from_file(filename, delimiter=',', smoothing=None):
+    data = np.genfromtxt(filename,delimiter=delimiter)
+    x = data[:,0].tolist()
+    y = data[:,1].tolist()
+    if smoothing is not None:
+        x_new =  np.linspace(x[0],x[-1],smoothing)
+        y_smooth = spline(x,y,x_new)
+        x = x_new
+        y = y_smooth
+
+    return x,y
 
 def get_valid_segments( seq, minval, maxval ) :
     get_first = lambda val: val<maxval
@@ -50,13 +69,15 @@ def get_raw_spline_from_hist(hist,options):
     y = hist.y
     
     y_temp=[]
+    offset = options.get('offset',0)
     for y_val in y:
 #            y_temp.append(y_val+1.838454)
-            y_temp.append(y_val+2.814454)
+#            y_temp.append(y_val+2.814454)
+            y_temp.append(y_val+offset)
 
     #print bin_centres
-    return  bin_centres, y
-#    return  bin_centres, y_temp
+#    return  bin_centres, y
+    return  bin_centres, y_temp
 
 
 def get_spline_from_hist(hist,options,smooth=1):
@@ -101,7 +122,11 @@ def make_single_1d_overlay( histos, filenames, ext="png" ) : #FIXME: ugly, but i
     for hname, options in histos.iteritems() :
         fig = plt.figure( figsize=[10,7.5] )
         plt.rcParams.update({'font.size':12,'axes.labelsize':30,'xtick.labelsize':25, 'ytick.labelsize':25 })
-        hists = [f.get(hname) for f in fs ]
+        try:
+            hists = [f.get(hname) for f in fs ]
+        except ReferenceError: 
+            print "ERROR: {} is not in one of the files".format(hname)
+            continue
         xmins  =[ hist.xedges[0]  for hist in hists ] 
         xmaxs  =[ hist.xedges[-1] for hist in hists ]
         xmin, xmax = min(xmins), max(xmaxs)
@@ -116,16 +141,16 @@ def make_single_1d_overlay( histos, filenames, ext="png" ) : #FIXME: ugly, but i
         plt.axis( [xmin, xmax, ymin, ymax] )
         axes = plt.axes()
         axes.set_xlabel( hist.xlabel )
-        axes.set_ylabel( options["title"] )
+        axes.set_ylabel( options.get("ytitle",None) )
         pylab.xticks(pylab.arange( xmin, xmax*1.001, options["xticks"] ) )
         from config.file_dict import file_dict
         for rsp,lst,name in zip(r_splines,linestyles,filenames):
             (rxs,rys)  = rsp 
             plt.plot(rxs,rys,'b',linestyle=lst,linewidth=3,label=file_dict.get(name))
 
-        plt.legend()
+#        plt.legend()
         plt.gcf().subplots_adjust(bottom=0.15)
-        plt.gcf().subplots_adjust(left=0.12)
+        plt.gcf().subplots_adjust(left=0.15)
 
         print "Save to: ", fig_name( options, filenames[1] ) + "_overlay.%s" % ext 
         plt.savefig( fig_name( options, filenames[1] ) + "_overlay.%s" % ext )
@@ -138,7 +163,11 @@ def make_raw_smooth_overlays( r_s_histos, filename, ext="png" ) : #FIXME: ugly, 
         s_hname,s_options=s_histo
         fig = plt.figure( figsize=[10,7.5] )
         plt.rcParams.update({'font.size':25,'axes.labelsize':30 })
-        r_hist,s_hist = f.get(r_hname) ,f.get(s_hname) 
+        try:
+            r_hist,s_hist = f.get(r_hname) ,f.get(s_hname) 
+        except:
+            print "Failed to get {} or {} from {}".format(r_hname, s_hname, filename)
+            continue
         xmin  = r_hist.xedges[0]   
         xmax  = r_hist.xedges[-1] 
         ymin, ymax = r_options["zrange1d"]
@@ -150,7 +179,7 @@ def make_raw_smooth_overlays( r_s_histos, filename, ext="png" ) : #FIXME: ugly, 
         plt.axis( [xmin, xmax, ymin, ymax] )
         axes = plt.axes()
         axes.set_xlabel( r_hist.xlabel )
-        axes.set_ylabel( r_options["title"] )
+        axes.set_ylabel( r_options["ytitle"] )
         pylab.xticks(pylab.arange( xmin, xmax*1.001, r_options["xticks"] ) )
         for rsp,lst in zip(r_splines,linestyles):
             (rxs,rys)  = rsp 
@@ -166,64 +195,96 @@ def make_single_1d_plot( histos, filename, ext="png" ) :
     f = r2m.RootFile(filename)
     for hname, options in histos.iteritems() :
         hist = f.get(hname)
-        xmin,xmax = hist.xedges[0], hist.xedges[-1]
-        ymin,ymax = options["zrange1d"]
+#        xmin,xmax = hist.xedges[0], hist.xedges[-1]
+#        ymin,ymax = options["zrange1d"]
         rxs,rys= get_raw_spline_from_hist(hist,options)
-        initialise_axes(hist,options)
+        initialise_axes(hist,options,filename=filename)
         plt.plot(rxs,rys,'b',linestyle='solid',linewidth=3,zorder=2)
         if 'green_band' in options.keys():
             x_min, x_max  = options['green_band']
 #            plt.axvspan(xmin= x_min,xmax=x_max,facecolor="#30c048", alpha = 0.4)
             plt.axvspan(xmin= x_min,xmax=x_max,color="#30c048",zorder=1)
         plt.gcf().subplots_adjust(bottom=0.15)
-        plt.gcf().subplots_adjust(left=0.12)
+        plt.gcf().subplots_adjust(left=0.15)
 
         print "Save to: " , fig_name( options, filename ) + ".%s" % ext
         plt.savefig( fig_name( options, filename ) + ".%s" % ext )
 
-def make_red_band_plot_raw( histos, filename, ext="png"):
+def get_band_collection(xs,ys,ymax=None):
+    x_low = [x-1.5 for x in xs]
+    x_high = [x+1.5 for x in xs]
+    patches = []
+    for i in range(len(xs)-1):
+        y_1 = ys[i]
+        y_2 = ys[i+1]
+        x_low_1 = x_low[i]
+        x_low_2 = x_low[i+1]
+        x_high_1 = x_high[i]
+        x_high_2 = x_high[i+1]
+        if y_1 < ymax or y_2 < ymax:  
+            poly_coords = [(x_low_1, y_1), (x_low_2, y_2), (x_high_2, y_2), (x_high_1, y_1)]
+            patches.append(Polygon(poly_coords))
+
+    return PatchCollection(patches,zorder=4,facecolors='#ce5e60',linewidths=1,edgecolors='#ce5e60')
+
+def make_red_band_plot_raw( histos, filename, ext="png", data_file=None):
     f = r2m.RootFile(filename)
+    xmin=85
+    xmax=140
     for hname, options in histos.iteritems() :
         hist = f.get(hname)
-        xs,ys=get_raw_spline_from_hist(hist,options)
-        initialise_axes(hist,options)
 
-        ysl = ys
+        xs,ys=get_raw_spline_from_hist(hist,options)
+        ax = initialise_axes(hist,options, xmin=xmin, xmax=xmax, xmin_offset=5)
+
         #draw the LEP exclusion
         if  hist.xedges[0] < 114.4:
-            plt.axvspan(xmin= hist.xedges[0],xmax=114.4,color="#FFFF00",zorder=0)
+            plt.axvspan(xmin= xmin,xmax=114.4,color="#FFFF00",zorder=0)
             plt.axvspan(xmin= 124,xmax=126,color="#00FF00",zorder=1)
-            x_pos_lhc_label=0.75
+            x_pos_lhc_label=0.67
 #            print x_pos_lhc_label
             plt.figtext(x=0.15,y=0.2, s="LEP \nexcluded",zorder=2 )
             plt.figtext(x=x_pos_lhc_label,y=0.2, s="LHC ",zorder=2 )
-        x_in, x_out = get_x_in_out_curve(xs,ysl)
-        plt.fill_betweenx(ys,x_out, xs, facecolor="#ce5e60",edgecolor='#ce5e60',zorder=3)
-        plt.fill_betweenx(ys,xs, x_in,facecolor="#ce5e60",edgecolor='#ce5e60',zorder=4)
+        if hist.xedges[-1] > 130 or xmax > 130:
+            plt.axvspan(xmin= 130,xmax=xmax,color="#DBBB88",zorder=1)
+            plt.figtext(x=0.77,y=0.2, s="Theoretically\nInaccessible",zorder=2 )
+
+        ymax = options["zrange1d"][1]
+        collection = get_band_collection(xs,ys,ymax=ymax)
+        ax.add_collection(collection) 
+
         plt.plot(xs,ys,'b',linestyle='solid',linewidth=3,zorder=5)
+        model = filename.split('/')[-1].split('_')[0]
+        data_file = { 'cmssm': 'cmssm_pre_lhc.csv', 'nuhm1': 'nuhm1_pre_lhc.csv' }[model]
+        smoothing = { 'cmssm': 100, 'nuhm1': None }[model]
+
+        if data_file:
+            xf,yf = get_xy_from_file(filename=data_file,smoothing=smoothing)
+            plt.plot(xf,yf,'b',linestyle='dashed',linewidth=3,zorder=4)
+
         plt.gcf().subplots_adjust(bottom=0.15)
         plt.gcf().subplots_adjust(left=0.12)
 
         print "Save to: ", fig_name( options, filename ) + "_raw.%s" % ext 
         plt.savefig( fig_name( options, filename ) + "_raw.%s" % ext )
 
-def make_red_band_plot_smooth( histos, filename, ext="png"):
-    f = r2m.RootFile(filename)
-    for hname, options in histos.iteritems() :
-        hist = f.get(hname)
-        sp =     get_spline_from_hist(hist,options,0)
-        (xnews,ynews)  = sp 
-        initialise_axes(hist,options)
-        for xnew, ynew in zip(xnews, ynews ) :
-            ys=ynew.tolist()
-            xs=xnew.tolist()
-            x_in, x_out = get_x_in_out_curve(xs,ys)
-            plt.fill_betweenx(ys,x_out, xs, facecolor="red",edgecolor='red')
-            plt.fill_betweenx(ys,xs, x_in,facecolor="red",edgecolor='red')
-            plt.plot(xs,ys,'b',linestyle='solid',linewidth=3)
-
-        print "Save to: ", fig_name( options, filename ) + "_smooth.%s" % ext 
-        plt.savefig( fig_name( options, filename ) + "_smooth.%s" % ext )
+#def make_red_band_plot_smooth( histos, filename, ext="png"):
+#    f = r2m.RootFile(filename)
+#    for hname, options in histos.iteritems() :
+#        hist = f.get(hname)
+#        sp =     get_spline_from_hist(hist,options,0)
+#        (xnews,ynews)  = sp 
+##        initialise_axes(hist,options)
+#        for xnew, ynew in zip(xnews, ynews ) :
+#            ys=ynew.tolist()
+#            xs=xnew.tolist()
+#            x_in, x_out = get_x_in_out_curve(xs,ys)
+#            plt.fill_betweenx(ys,x_out, xs, facecolor="red",edgecolor='red')
+#            plt.fill_betweenx(ys,xs, x_in,facecolor="red",edgecolor='red')
+#            plt.plot(xs,ys,'b',linestyle='solid',linewidth=3)
+#
+#        print "Save to: ", fig_name( options, filename ) + "_smooth.%s" % ext 
+#        plt.savefig( fig_name( options, filename ) + "_smooth.%s" % ext )
 
 def get_x_in_out_curve(xs,ys):
     y_min_glob  = min(ys)
@@ -241,18 +302,26 @@ def get_x_in_out_curve(xs,ys):
             x_out.append(x+1.5)
     return x_in, x_out
 
-def initialise_axes(hist,options,xmin=None, xmax=None,ymin=None, ymax=None):
+def initialise_axes(hist,options,xmin=None, xmax=None,ymin=None, ymax=None,filename=None, xmin_offset=0.):
         if xmin is None: xmin = hist.xedges[0]
         if xmax is None: xmax = hist.xedges[-1]
         if ymin is None and ymax is None:   ymin,ymax = options["zrange1d"]
         plt.figure()
 #        plt.rcParams.update({'font.size':18,})
         fig = plt.figure( figsize=[10,7.5] )
-        plt.rcParams.update({'font.size':25,'axes.labelsize':30 })
+#        plt.rcParams.update({'font.size':25,'axes.labelsize':30 })
+        plt.rcParams.update({'axes.titlesize':30,'legend.fontsize':16,'axes.labelsize':35,'xtick.labelsize':25, 'ytick.labelsize':25 })
 #        plt.rcParams.update({'font.size':25,'axes.labelsize':30 })
         plt.axis( [xmin, xmax, ymin, ymax] )
         axes = plt.axes()
         axes.set_xlabel( hist.xlabel )
-        axes.set_ylabel( options["title"] )
+        axes.set_ylabel( options["ytitle"] )
 #        axes.set_title( "%s(%s)" % (options["title"], hist.xlabel) )
-        pylab.xticks(pylab.arange( xmin, xmax*1.001, options["xticks"] ) )
+        pylab.xticks(pylab.arange( xmin+xmin_offset, xmax*1.001, options["xticks"] ) )
+        pylab.yticks(pylab.arange( ymin, ymax*1.001, options.get('yticks') ) )
+        if options.get('title') :    
+            if filename:
+            #    axes.set_title( file_dict.get(filename,{}).get('title'))
+                title=file_dict.get(filename,{}).get('title')
+                plt.text(0.5, 1.05, title, ha='center', fontsize=30,transform=axes.transAxes)
+        return axes

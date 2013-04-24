@@ -3,11 +3,13 @@ from collections import OrderedDict
 
 
 def get_spaces_dict() :
-    return spaces
+#    return spaces
+#    return standard_spaces('dchi')
+    return standard_spaces('chi2')
 
 
 spaces = { 
-#            "data_histograms/iHist_m0_m12_dchi"     : pd("dchi", "m0",  "m12" ),
+#            "data_histograms/iHist_m0_m12_dchi"             : pd("dchi", "m0",  "m12" ),
 #            "data_histograms/iHist_m0_m12_pred_tanb"        :  pd("Ptanb", "m0"  ,"m12") , 
 #            "data_histograms/iHist_m0_m12_pred_A0"          :  pd("PA0", "m0"  ,"m12") , 
 #            "data_histograms/iHist_m0_m12_pred_m_h^0"       :  pd("Pm_h0", "m0" ,"m12" ),
@@ -24,19 +26,29 @@ spaces = {
 #            "data_histograms/iHist_m0_tanb_chi2"    : pd("chi2", "m0",  "m12" ),
 #            "data_histograms/iHist_tanb_m12_dchi"   : pd("dchi", "tanb","m12" ),
 #            "data_histograms/iHist_tanb_m12_chi2"   : pd("chi2", "tanb","m12" ),
-            "data_histograms/iHist_mA0_tanb_dchi"   : pd("dchi", "MA"  ,"tanb"),
+#            "data_histograms/iHist_mA0_tanb_dchi"   : pd("dchi", "MA"  ,"tanb"),
 #            "data_histograms/iHist_mA0_tanb_chi2"   : pd("chi2", "MA"  ,"tanb"),
 ##            "data_histograms/iHist_mA0_tanb_pred_m_h^0"     : pd("Pm_h0", "MA"  ,"tanb"),
 #            "data_histograms/iHist_mA0_tanb_pred_Bsmumu"    : pd("Pbsmm", "MA"  ,"tanb"),
 #            "data_histograms/iHist_neu1_sigma_pp^SI_dchi"   : pd("dchi", "mneu1"  ,"ssi"),
 #            "data_histograms/iHist_neu1_sigma_pp^SI_chi2"   : pd("chi2", "mneu1"  ,"ssi"),
-#            "data_histograms/iHist_neu1_sigma_pp^SI_cm-2_dchi"   : pd("dchi", "mneu1"  ,"ssicm"),
+            "data_histograms/iHist_neu1_sigma_pp^SI_cm-2_dchi"   : pd("dchi", "mneu1"  ,"ssicm"),
 #            "data_histograms/iHist_neu1_sigma_pp^SI_cm-2_chi2"   : pd("chi2", "mneu1"  ,"ssicm"),
 ####            "data_histograms/iHist_mA0_tanb_pred_Bsmumu"   : pd("Pbsmm", "MA"  ,"tanb"),
 #            "data_histograms/iHist_mneu1_ssi_dchi": pd("dchi","mneu1","ssi" ),
         }
 
-
+def standard_spaces(type):
+    s_spaces={
+            #eval("\"data_histograms/iHist_m0_m12_%s\"     : pd(\"%s\", \"m0\",  \"m12\" )" % (type,type) ),
+            "data_histograms/iHist_m0_m12_"+type     : pd(type, "m0",  "m12" ),
+#            "data_histograms/iHist_m0_tanb_"+type    : pd(type, "m0",  "tanb" ),
+#            "data_histograms/iHist_tanb_m12_"+type   : pd(type, "tanb","m12" ),
+#            "data_histograms/iHist_mA0_tanb_"+type   : pd(type, "MA"  ,"tanb"),
+#            "data_histograms/iHist_A0_tanb_"+type    : pd(type, "A0"  ,"tanb"),
+#            "data_histograms/iHist_mhd2_mhu2_"+type  : pd(type, "mhd2"  ,"mhu2"),
+          }
+    return s_spaces
 
 # from "grid_list.py" quite some plots that can be made:
 #            "data_histograms/iHist_m0_m12_chi2"             : pd("chi2", "m0",  "m12" ),
